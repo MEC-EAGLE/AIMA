@@ -1,0 +1,10 @@
+<!doctype html>
+<title>Projects</title>
+<h1>Projects</h1>
+<ul>
+{% for p in projects %}
+  <li>{{ p.title }} by {{ p.owner.email if p.owner else 'Unknown' }}</li>
+{% else %}
+  <li>No projects posted.</li>
+{% endfor %}
+</ul>

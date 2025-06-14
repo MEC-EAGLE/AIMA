@@ -1,0 +1,10 @@
+<!doctype html>
+<title>Search Results</title>
+<h1>Results for "{{ query }}"</h1>
+<ul>
+{% for job in jobs %}
+  <li>{{ job.title }}</li>
+{% else %}
+  <li>No matches found.</li>
+{% endfor %}
+</ul>

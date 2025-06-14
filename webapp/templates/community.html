@@ -1,0 +1,10 @@
+<!doctype html>
+<title>Community</title>
+<h1>Community Members</h1>
+<ul>
+{% for m in members %}
+  <li>{{ m.email }}</li>
+{% else %}
+  <li>No members found.</li>
+{% endfor %}
+</ul>

@@ -1,0 +1,10 @@
+<!doctype html>
+<title>Internships</title>
+<h1>Internship Listings</h1>
+<ul>
+{% for i in internships %}
+  <li>{{ i.title }} at {{ i.organization.name if i.organization else 'Unknown' }}</li>
+{% else %}
+  <li>No internships available.</li>
+{% endfor %}
+</ul>
