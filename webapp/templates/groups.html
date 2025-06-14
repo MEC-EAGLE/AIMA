@@ -1,0 +1,15 @@
+<!doctype html>
+<title>Groups</title>
+<h1>Groups</h1>
+<ul>
+{% for g in groups %}
+  <li>
+    {{ g.name }} (owner: {{ g.owner.email if g.owner else 'Unknown' }})
+    {% if current_user.is_authenticated %}
+      - <a href="{{ url_for('join_group', group_id=g.id) }}">Join</a>
+    {% endif %}
+  </li>
+{% else %}
+  <li>No groups created.</li>
+{% endfor %}
+</ul>

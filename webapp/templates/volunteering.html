@@ -1,0 +1,10 @@
+<!doctype html>
+<title>Volunteering</title>
+<h1>Volunteering Opportunities</h1>
+<ul>
+{% for v in opportunities %}
+  <li>{{ v.title }} at {{ v.organization.name if v.organization else 'Unknown' }}</li>
+{% else %}
+  <li>No volunteering opportunities.</li>
+{% endfor %}
+</ul>
