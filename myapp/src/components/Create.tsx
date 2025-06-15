@@ -1,36 +1,36 @@
-import { useNavigate } from 'react-router-dom'
-import { useState, useEffect } from 'react'
-import { getPosts, savePosts } from '../utils'
+import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { getPosts, savePosts } from '../utils';
 
 export default function Create() {
-  const navigate = useNavigate()
-  const [user, setUser] = useState<any>(null)
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [postType, setPostType] = useState('job')
+  const navigate = useNavigate();
+  const [user, setUser] = useState<any>(null);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [postType, setPostType] = useState('job');
 
   useEffect(() => {
-    const u = localStorage.getItem('currentUser')
-    if (!u) return navigate('/login')
-    const parsed = JSON.parse(u)
+    const u = localStorage.getItem('currentUser');
+    if (!u) return navigate('/login');
+    const parsed = JSON.parse(u);
     if (parsed.type !== 'org') {
-      alert('Only organizations can create posts.')
-      navigate('/dashboard')
-      return
+      alert('Only organizations can create posts.');
+      navigate('/dashboard');
+      return;
     }
-    setUser(parsed)
-  }, [navigate])
+    setUser(parsed);
+  }, [navigate]);
 
-  if (!user) return null
+  if (!user) return null;
 
   const submit = (e: React.FormEvent) => {
-    e.preventDefault()
-    const posts = getPosts()
-    posts.push({ id: Date.now(), orgEmail: user.email, title, description, postType, tags: [], applicants: [] })
-    savePosts(posts)
-    alert('Created!')
-    navigate('/dashboard')
-  }
+    e.preventDefault();
+    const posts = getPosts();
+    posts.push({ id: Date.now(), orgEmail: user.email, title, description, postType, tags: [], applicants: [] });
+    savePosts(posts);
+    alert('Created!');
+    navigate('/dashboard');
+  };
 
   return (
     <div className="container my-4">
@@ -56,5 +56,5 @@ export default function Create() {
         <button className="btn btn-primary" type="submit">Create</button>
       </form>
     </div>
-  )
+  );
 }

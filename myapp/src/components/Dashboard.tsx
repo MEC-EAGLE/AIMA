@@ -1,26 +1,26 @@
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import Nav from './Nav'
-import Groups from './Groups'
-import { getPosts, savePosts } from '../utils'
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Nav from './Nav';
+import Groups from './Groups';
+import { getPosts, savePosts } from '../utils';
 
 export default function Dashboard() {
-  const navigate = useNavigate()
-  const [user, setUser] = useState<any>(null)
-  const [posts, setPosts] = useState<any[]>([])
+  const navigate = useNavigate();
+  const [user, setUser] = useState<any>(null);
+  const [posts, setPosts] = useState<any[]>([]);
 
   useEffect(() => {
-    const u = localStorage.getItem('currentUser')
+    const u = localStorage.getItem('currentUser');
     if (!u) {
-      navigate('/login')
+      navigate('/login');
     } else {
-      const parsed = JSON.parse(u)
-      setUser(parsed)
-      setPosts(getPosts())
+      const parsed = JSON.parse(u);
+      setUser(parsed);
+      setPosts(getPosts());
     }
-  }, [navigate])
+  }, [navigate]);
 
-  if (!user) return null
+  if (!user) return null;
 
   return (
     <div>
@@ -38,21 +38,31 @@ export default function Dashboard() {
               <p>{p.description}</p>
               {user.type === 'member' && (
                 p.applicants.includes(user.email) ? (
-                  <button className="btn btn-sm btn-warning" onClick={() => {
-                    const all = getPosts()
-                    const idx = all.findIndex(x => x.id === p.id)
-                    all[idx].applicants = all[idx].applicants.filter((a: string) => a !== user.email)
-                    savePosts(all)
-                    setPosts(all)
-                  }}>Withdraw</button>
+                  <button
+                    className="btn btn-sm btn-warning"
+                    onClick={() => {
+                      const all = getPosts();
+                      const idx = all.findIndex(x => x.id === p.id);
+                      all[idx].applicants = all[idx].applicants.filter((a: string) => a !== user.email);
+                      savePosts(all);
+                      setPosts(all);
+                    }}
+                  >
+                    Withdraw
+                  </button>
                 ) : (
-                  <button className="btn btn-sm btn-primary" onClick={() => {
-                    const all = getPosts()
-                    const idx = all.findIndex(x => x.id === p.id)
-                    all[idx].applicants.push(user.email)
-                    savePosts(all)
-                    setPosts(all)
-                  }}>Apply</button>
+                  <button
+                    className="btn btn-sm btn-primary"
+                    onClick={() => {
+                      const all = getPosts();
+                      const idx = all.findIndex(x => x.id === p.id);
+                      all[idx].applicants.push(user.email);
+                      savePosts(all);
+                      setPosts(all);
+                    }}
+                  >
+                    Apply
+                  </button>
                 )
               )}
             </li>
@@ -60,5 +70,5 @@ export default function Dashboard() {
         </ul>
       </div>
     </div>
-  )
+  );
 }

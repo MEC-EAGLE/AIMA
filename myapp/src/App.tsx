@@ -1,13 +1,13 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import Home from './components/Home'
-import Login from './components/Login'
-import Register from './components/Register'
-import Verify from './components/Verify'
-import Dashboard from './components/Dashboard'
-import Create from './components/Create'
-import Community from './components/Community'
-import Search from './components/Search'
-import Chat from './components/Chat'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Home from './components/Home';
+import Login from './components/Login';
+import Register from './components/Register';
+import Verify from './components/Verify';
+import Dashboard from './components/Dashboard';
+import Create from './components/Create';
+import Community from './components/Community';
+import Search from './components/Search';
+import Chat from './components/Chat';
 
 function App() {
   return (
@@ -25,7 +25,6 @@ function App() {
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
-  )
+  );
 }
-
-export default App
+export default App;

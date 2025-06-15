@@ -1,20 +1,25 @@
-import { useState, useEffect } from 'react'
-import { getPosts } from '../utils'
+import { useState, useEffect } from 'react';
+import { getPosts } from '../utils';
 
 export default function Search() {
-  const [query, setQuery] = useState('')
-  const [results, setResults] = useState<any[]>([])
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState<any[]>([]);
 
   useEffect(() => {
-    const posts = getPosts()
-    const q = query.toLowerCase()
-    setResults(posts.filter(p => p.title.toLowerCase().includes(q) || p.orgEmail.toLowerCase().includes(q)))
-  }, [query])
+    const posts = getPosts();
+    const q = query.toLowerCase();
+    setResults(posts.filter(p => p.title.toLowerCase().includes(q) || p.orgEmail.toLowerCase().includes(q)));
+  }, [query]);
 
   return (
     <div className="container my-4">
       <h2>Search</h2>
-      <input className="form-control mb-3" placeholder="Search" value={query} onChange={e => setQuery(e.target.value)} />
+      <input
+        className="form-control mb-3"
+        placeholder="Search"
+        value={query}
+        onChange={e => setQuery(e.target.value)}
+      />
       <ul className="list-group">
         {results.map(r => (
           <li key={r.id} className="list-group-item">
@@ -24,5 +29,5 @@ export default function Search() {
         ))}
       </ul>
     </div>
-  )
+  );
 }
