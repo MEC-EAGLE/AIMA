@@ -46,6 +46,7 @@ export default function Community() {
                 <span>{u.email}</span>
                 <div>
                   <button
+                    type="button"
                     className="btn btn-sm btn-outline-primary me-2"
                     onClick={() => toggleFollow(u.email)}
                   >

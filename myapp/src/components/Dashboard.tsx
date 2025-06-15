@@ -40,6 +40,7 @@ export default function Dashboard() {
               {user.type === 'member' && (
                   p.applicants.includes(user.email) ? (
                     <button
+                      type="button"
                       className="btn btn-sm btn-warning"
                       onClick={async () => {
                         const all = await getPosts();
@@ -53,6 +54,7 @@ export default function Dashboard() {
                   </button>
                 ) : (
                     <button
+                      type="button"
                       className="btn btn-sm btn-primary"
                       onClick={async () => {
                         const all = await getPosts();

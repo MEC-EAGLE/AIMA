@@ -42,11 +42,13 @@ export default function Nav() {
               </Link>
             </li>
           </ul>
-          <button className="btn btn-outline-secondary" onClick={handleLogout}>
-            <Link className="nav-link" to="/login">
-              Logout
-            </Link>
-          </button>
+          <Link
+            to="/login"
+            className="btn btn-outline-secondary"
+            onClick={handleLogout}
+          >
+            Logout
+          </Link>
         </div>
       </div>
     </nav>

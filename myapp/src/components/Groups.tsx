@@ -36,7 +36,7 @@ export default function Groups({ userEmail }: { userEmail: string }) {
           onChange={e => setName(e.target.value)}
           placeholder="New group"
         />
-        <button className="btn btn-secondary" onClick={createGroup}>
+        <button type="button" className="btn btn-secondary" onClick={createGroup}>
           Create
         </button>
       </div>

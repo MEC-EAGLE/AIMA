@@ -25,7 +25,7 @@ export default function Verify() {
         <div className="card-body">
           <h2 className="card-title mb-3">Verify Account</h2>
           <p>Click verify to activate your account for {email}.</p>
-          <button className="btn btn-primary" onClick={handleVerify}>
+          <button type="button" className="btn btn-primary" onClick={handleVerify}>
             Verify
           </button>
         </div>

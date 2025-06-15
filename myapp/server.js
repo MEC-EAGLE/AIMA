@@ -1,21 +1,7 @@
 const http = require('http');
-const fs = require('fs');
-const path = require('path');
-
-const DB_FILE = path.join(__dirname, 'db.json');
+const prism = require('./prism-db');
 const PORT = 3001;
 
-function readDB() {
-  try {
-    return JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
-  } catch {
-    return { users: [], posts: [], groups: [], messages: [] };
-  }
-}
-
-function writeDB(data) {
-  fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
-}
 
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, 'http://localhost');
@@ -32,9 +18,8 @@ const server = http.createServer((req, res) => {
     return res.end('Not found');
   }
   if (req.method === 'GET') {
-    const db = readDB();
     res.setHeader('Content-Type', 'application/json');
-    return res.end(JSON.stringify(db[key]));
+    return res.end(JSON.stringify(prism.get(key)));
   }
   if (req.method === 'POST') {
     let body = '';
@@ -42,9 +27,7 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       try {
         const data = JSON.parse(body || 'null');
-        const db = readDB();
-        db[key] = data;
-        writeDB(db);
+        prism.set(key, data);
         res.setHeader('Content-Type', 'application/json');
         res.end(JSON.stringify({status:'ok'}));
       } catch {
