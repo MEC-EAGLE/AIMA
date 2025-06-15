@@ -21,32 +21,36 @@ export default function Chat() {
   };
 
   return (
-    <div className="container my-4">
-      <h3>Chat with {email}</h3>
-      <div
-        style={{
-          height: '200px',
-          overflowY: 'auto',
-          border: '1px solid #ccc',
-          padding: '10px',
-        }}
-      >
-        {msgs.map((m, i) => (
-          <div key={i} className={m.from === current.email ? 'text-end' : 'text-start'}>
-            <small>{m.from === current.email ? 'You' : m.from}</small>
-            <p>{m.text}</p>
+    <div className="container my-4" style={{ maxWidth: '500px' }}>
+      <div className="card">
+        <div className="card-body">
+          <h3 className="card-title">Chat with {email}</h3>
+          <div
+            style={{
+              height: '200px',
+              overflowY: 'auto',
+              border: '1px solid #ccc',
+              padding: '10px',
+            }}
+          >
+            {msgs.map((m, i) => (
+              <div key={i} className={m.from === current.email ? 'text-end' : 'text-start'}>
+                <small>{m.from === current.email ? 'You' : m.from}</small>
+                <p>{m.text}</p>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <div className="input-group mt-2">
-        <input
-          className="form-control"
-          value={text}
-          onChange={e => setText(e.target.value)}
-        />
-        <button className="btn btn-primary" onClick={send}>
-          Send
-        </button>
+          <div className="input-group mt-2">
+            <input
+              className="form-control"
+              value={text}
+              onChange={e => setText(e.target.value)}
+            />
+            <button className="btn btn-primary" onClick={send}>
+              Send
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

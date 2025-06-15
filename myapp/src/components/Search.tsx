@@ -12,22 +12,26 @@ export default function Search() {
   }, [query]);
 
   return (
-    <div className="container my-4">
-      <h2>Search</h2>
-      <input
-        className="form-control mb-3"
-        placeholder="Search"
-        value={query}
-        onChange={e => setQuery(e.target.value)}
-      />
-      <ul className="list-group">
-        {results.map(r => (
-          <li key={r.id} className="list-group-item">
-            <strong>{r.title}</strong> ({r.postType}) by {r.orgEmail}
-            <p>{r.description}</p>
-          </li>
-        ))}
-      </ul>
+    <div className="container my-4" style={{ maxWidth: '500px' }}>
+      <div className="card shadow-sm">
+        <div className="card-body">
+          <h2 className="card-title">Search</h2>
+          <input
+            className="form-control mb-3"
+            placeholder="Search"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+          />
+          <ul className="list-group list-group-flush">
+            {results.map(r => (
+              <li key={r.id} className="list-group-item">
+                <strong>{r.title}</strong> ({r.postType}) by {r.orgEmail}
+                <p>{r.description}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }

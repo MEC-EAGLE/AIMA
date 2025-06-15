@@ -31,11 +31,12 @@ export default function Dashboard() {
         <Groups userEmail={user.email} />
         <h4>Opportunities</h4>
         {posts.length === 0 && <p>No posts yet.</p>}
-        <ul className="list-group">
-          {posts.map(p => (
-            <li key={p.id} className="list-group-item">
-              <strong>{p.title}</strong> ({p.postType}) by {p.orgEmail}
-              <p>{p.description}</p>
+        <div className="card">
+          <ul className="list-group list-group-flush">
+            {posts.map(p => (
+              <li key={p.id} className="list-group-item">
+                <strong>{p.title}</strong> ({p.postType}) by {p.orgEmail}
+                <p>{p.description}</p>
               {user.type === 'member' && (
                 p.applicants.includes(user.email) ? (
                   <button
@@ -67,7 +68,8 @@ export default function Dashboard() {
               )}
             </li>
           ))}
-        </ul>
+          </ul>
+        </div>
       </div>
     </div>
   );

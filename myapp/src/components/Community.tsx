@@ -33,29 +33,33 @@ export default function Community() {
   if (!current) return null;
 
   return (
-    <div className="container my-4">
-      <h2>Community</h2>
-      <ul className="list-group">
-        {users.map(u => (
-          <li
-            key={u.email}
-            className="list-group-item d-flex justify-content-between align-items-center"
-          >
-            <span>{u.email}</span>
-            <div>
-              <button
-                className="btn btn-sm btn-outline-primary me-2"
-                onClick={() => toggleFollow(u.email)}
+    <div className="container my-4" style={{ maxWidth: '600px' }}>
+      <div className="card">
+        <div className="card-body">
+          <h2 className="card-title mb-3">Community</h2>
+          <ul className="list-group list-group-flush">
+            {users.map(u => (
+              <li
+                key={u.email}
+                className="list-group-item d-flex justify-content-between align-items-center"
               >
-                {current.followers.includes(u.email) ? 'Unfollow' : 'Follow'}
-              </button>
-              <Link to={`/chat/${u.email}`} className="btn btn-sm btn-secondary">
-                Message
-              </Link>
-            </div>
-          </li>
-        ))}
-      </ul>
+                <span>{u.email}</span>
+                <div>
+                  <button
+                    className="btn btn-sm btn-outline-primary me-2"
+                    onClick={() => toggleFollow(u.email)}
+                  >
+                    {current.followers.includes(u.email) ? 'Unfollow' : 'Follow'}
+                  </button>
+                  <Link to={`/chat/${u.email}`} className="btn btn-sm btn-secondary">
+                    Message
+                  </Link>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }

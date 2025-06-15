@@ -33,13 +33,15 @@ export default function Create() {
   };
 
   return (
-    <div className="container my-4">
-      <h2>Create Opportunity</h2>
-      <form onSubmit={submit}>
-        <div className="mb-3">
-          <label className="form-label">Title</label>
-          <input className="form-control" value={title} onChange={e => setTitle(e.target.value)} required />
-        </div>
+    <div className="container my-4" style={{ maxWidth: '600px' }}>
+      <div className="card">
+        <div className="card-body">
+          <h2 className="card-title mb-3">Create Opportunity</h2>
+          <form onSubmit={submit}>
+            <div className="mb-3">
+              <label className="form-label">Title</label>
+              <input className="form-control" value={title} onChange={e => setTitle(e.target.value)} required />
+            </div>
         <div className="mb-3">
           <label className="form-label">Description</label>
           <textarea className="form-control" value={description} onChange={e => setDescription(e.target.value)} required />
@@ -53,8 +55,10 @@ export default function Create() {
             <option value="project">Project</option>
           </select>
         </div>
-        <button className="btn btn-primary" type="submit">Create</button>
-      </form>
+            <button className="btn btn-primary" type="submit">Create</button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }

@@ -17,9 +17,11 @@ export default function Groups({ userEmail }: { userEmail: string }) {
   return (
     <div className="my-3">
       <h4>Groups</h4>
-      <ul>
+      <ul className="list-group mb-2">
         {groups.map(g => (
-          <li key={g.id}>{g.name}</li>
+          <li key={g.id} className="list-group-item">
+            {g.name}
+          </li>
         ))}
       </ul>
       <div className="input-group">

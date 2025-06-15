@@ -18,14 +18,16 @@ export default function Register() {
   };
 
   return (
-    <div className="container my-5">
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label">Email</label>
-          <input
-            type="email"
-            className="form-control"
+    <div className="container my-5" style={{ maxWidth: '420px' }}>
+      <div className="card shadow-sm">
+        <div className="card-body">
+          <h2 className="card-title mb-3">Register</h2>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label className="form-label">Email</label>
+              <input
+                type="email"
+                className="form-control"
             value={email}
             onChange={e => setEmail(e.target.value)}
             required
@@ -58,13 +60,15 @@ export default function Register() {
             <option value="org">Organization</option>
           </select>
         </div>
-        <button type="submit" className="btn btn-primary">
-          Register
-        </button>
-      </form>
-      <p className="mt-3">
-        Already have an account? <Link to="/login">Login</Link>
-      </p>
+            <button type="submit" className="btn btn-primary">
+              Register
+            </button>
+          </form>
+          <p className="mt-3 mb-0">
+            Already have an account? <Link to="/login">Login</Link>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
