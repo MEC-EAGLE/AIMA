@@ -9,30 +9,39 @@ export default function Chat() {
   const [msgs, setMsgs] = useState([] as any[]);
 
   useEffect(() => {
-    getMessages().then(all =>
+    (async () => {
+      try {
+        const all = await getMessages();
+        setMsgs(
+          all.filter(
+            m =>
+              (m.from === current.email && m.to === email) ||
+              (m.from === email && m.to === current.email)
+          )
+        );
+      } catch {
+        alert('Failed to fetch messages');
+      }
+    })();
+  }, [email]);
+
+  const send = async () => {
+    if (!text) return;
+    try {
+      const all = await getMessages();
+      all.push({ from: current.email, to: email!, text, timestamp: Date.now() });
+      await saveMessages(all);
       setMsgs(
         all.filter(
           m =>
             (m.from === current.email && m.to === email) ||
             (m.from === email && m.to === current.email)
         )
-      )
-    );
-  }, [email]);
-
-  const send = async () => {
-    if (!text) return;
-    const all = await getMessages();
-    all.push({ from: current.email, to: email!, text, timestamp: Date.now() });
-    await saveMessages(all);
-    setMsgs(
-      all.filter(
-        m =>
-          (m.from === current.email && m.to === email) ||
-          (m.from === email && m.to === current.email)
-      )
-    );
-    setText('');
+      );
+      setText('');
+    } catch {
+      alert('Failed to send message');
+    }
   };
 
   return (

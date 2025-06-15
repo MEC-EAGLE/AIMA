@@ -7,13 +7,17 @@ export default function Verify() {
   const email = params.get('email') || '';
 
   const handleVerify = async () => {
-    const users = await getUsers();
-    const idx = users.findIndex(u => u.email === email);
-    if (idx !== -1) {
-      users[idx].verified = true;
-      await saveUsers(users);
-      alert('Account verified! You can now login.');
-      navigate('/login');
+    try {
+      const users = await getUsers();
+      const idx = users.findIndex(u => u.email === email);
+      if (idx !== -1) {
+        users[idx].verified = true;
+        await saveUsers(users);
+        alert('Account verified! You can now login.');
+        navigate('/login');
+      }
+    } catch {
+      alert('Failed to verify account');
     }
   };
 

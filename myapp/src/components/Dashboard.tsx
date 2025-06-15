@@ -16,7 +16,14 @@ export default function Dashboard() {
     } else {
       const parsed = JSON.parse(u);
       setUser(parsed);
-      getPosts().then(setPosts);
+      (async () => {
+        try {
+          const posts = await getPosts();
+          setPosts(posts);
+        } catch {
+          alert('Failed to fetch posts');
+        }
+      })();
     }
   }, [navigate]);
 
@@ -43,11 +50,15 @@ export default function Dashboard() {
                       type="button"
                       className="btn btn-sm btn-warning"
                       onClick={async () => {
-                        const all = await getPosts();
-                        const idx = all.findIndex(x => x.id === p.id);
-                        all[idx].applicants = all[idx].applicants.filter((a: string) => a !== user.email);
-                        await savePosts(all);
-                        setPosts(all);
+                        try {
+                          const all = await getPosts();
+                          const idx = all.findIndex(x => x.id === p.id);
+                          all[idx].applicants = all[idx].applicants.filter((a: string) => a !== user.email);
+                          await savePosts(all);
+                          setPosts(all);
+                        } catch {
+                          alert('Failed to update posts');
+                        }
                       }}
                     >
                     Withdraw
@@ -57,11 +68,15 @@ export default function Dashboard() {
                       type="button"
                       className="btn btn-sm btn-primary"
                       onClick={async () => {
-                        const all = await getPosts();
-                        const idx = all.findIndex(x => x.id === p.id);
-                        all[idx].applicants.push(user.email);
-                        await savePosts(all);
-                        setPosts(all);
+                        try {
+                          const all = await getPosts();
+                          const idx = all.findIndex(x => x.id === p.id);
+                          all[idx].applicants.push(user.email);
+                          await savePosts(all);
+                          setPosts(all);
+                        } catch {
+                          alert('Failed to update posts');
+                        }
                       }}
                     >
                     Apply

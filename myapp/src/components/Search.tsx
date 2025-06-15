@@ -6,10 +6,15 @@ export default function Search() {
   const [results, setResults] = useState([] as any[]);
 
   useEffect(() => {
-    getPosts().then(posts => {
-      const q = query.toLowerCase();
-      setResults(posts.filter(p => p.title.toLowerCase().includes(q) || p.orgEmail.toLowerCase().includes(q)));
-    });
+    (async () => {
+      try {
+        const posts = await getPosts();
+        const q = query.toLowerCase();
+        setResults(posts.filter(p => p.title.toLowerCase().includes(q) || p.orgEmail.toLowerCase().includes(q)));
+      } catch {
+        alert('Failed to fetch posts');
+      }
+    })();
   }, [query]);
 
   return (

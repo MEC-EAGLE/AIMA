@@ -25,11 +25,15 @@ export default function Create() {
 
   const submit = async (e: any) => {
     e.preventDefault();
-    const posts = await getPosts();
-    posts.push({ id: Date.now(), orgEmail: user.email, title, description, postType, tags: [], applicants: [] });
-    await savePosts(posts);
-    alert('Created!');
-    navigate('/dashboard');
+    try {
+      const posts = await getPosts();
+      posts.push({ id: Date.now(), orgEmail: user.email, title, description, postType, tags: [], applicants: [] });
+      await savePosts(posts);
+      alert('Created!');
+      navigate('/dashboard');
+    } catch {
+      alert('Failed to create post');
+    }
   };
 
   return (

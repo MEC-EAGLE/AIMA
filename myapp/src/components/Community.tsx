@@ -12,22 +12,33 @@ export default function Community() {
     if (!u) return navigate('/login');
     const me = JSON.parse(u);
     setCurrent(me);
-    getUsers().then(all => setUsers(all.filter(x => x.email !== me.email)));
+    (async () => {
+      try {
+        const all = await getUsers();
+        setUsers(all.filter(x => x.email !== me.email));
+      } catch {
+        alert('Failed to fetch users');
+      }
+    })();
   }, [navigate]);
 
   const toggleFollow = async (email: string) => {
-    const all = await getUsers();
-    const idx = all.findIndex(u => u.email === current.email);
-    const followers = new Set(all[idx].followers);
-    if (followers.has(email)) {
-      followers.delete(email);
-    } else {
-      followers.add(email);
+    try {
+      const all = await getUsers();
+      const idx = all.findIndex(u => u.email === current.email);
+      const followers = new Set(all[idx].followers);
+      if (followers.has(email)) {
+        followers.delete(email);
+      } else {
+        followers.add(email);
+      }
+      all[idx].followers = Array.from(followers);
+      await saveUsers(all);
+      localStorage.setItem('currentUser', JSON.stringify(all[idx]));
+      setUsers(all.filter(x => x.email !== all[idx].email));
+    } catch {
+      alert('Failed to update users');
     }
-    all[idx].followers = Array.from(followers);
-    await saveUsers(all);
-    localStorage.setItem('currentUser', JSON.stringify(all[idx]));
-    setUsers(all.filter(x => x.email !== all[idx].email));
   };
 
   if (!current) return null;
