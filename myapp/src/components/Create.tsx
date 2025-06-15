@@ -13,11 +13,6 @@ export default function Create() {
     const u = localStorage.getItem('currentUser');
     if (!u) return navigate('/login');
     const parsed = JSON.parse(u);
-    if (parsed.type !== 'org') {
-      alert('Only organizations can create posts.');
-      navigate('/dashboard');
-      return;
-    }
     setUser(parsed);
   }, [navigate]);
 
@@ -26,7 +21,17 @@ export default function Create() {
   const submit = async (e: any) => {
     e.preventDefault();
     const posts = await getPosts();
-    posts.push({ id: Date.now(), orgEmail: user.email, title, description, postType, tags: [], applicants: [] });
+    posts.push({
+      id: Date.now(),
+      authorEmail: user.email,
+      authorType: user.type,
+      title,
+      description,
+      postType,
+      tags: [],
+      applicants: [],
+      comments: [],
+    });
     await savePosts(posts);
     alert('Created!');
     navigate('/dashboard');
@@ -36,7 +41,7 @@ export default function Create() {
     <div className="container my-4" style={{ maxWidth: '600px' }}>
       <div className="card">
         <div className="card-body">
-          <h2 className="card-title mb-3">Create Opportunity</h2>
+          <h2 className="card-title mb-3">Create Post</h2>
           <form onSubmit={submit}>
             <div className="mb-3">
               <label className="form-label">Title</label>

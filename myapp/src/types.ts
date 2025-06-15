@@ -8,14 +8,22 @@ export interface User {
   groups: number[];
 }
 
+export interface Comment {
+  userEmail: string;
+  text: string;
+  timestamp: number;
+}
+
 export interface Post {
   id: number;
-  orgEmail: string;
+  authorEmail: string;
+  authorType: 'member' | 'org';
   title: string;
   description: string;
   postType: 'job' | 'internship' | 'volunteering' | 'project';
   tags: string[];
   applicants: string[];
+  comments: Comment[];
 }
 
 export interface Group {

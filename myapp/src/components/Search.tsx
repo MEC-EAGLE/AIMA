@@ -19,7 +19,7 @@ export default function Search() {
         p =>
           p.title.toLowerCase().includes(q) ||
           p.description.toLowerCase().includes(q) ||
-          p.orgEmail.toLowerCase().includes(q) ||
+          p.authorEmail.toLowerCase().includes(q) ||
           p.tags.some(t => t.toLowerCase().includes(q))
       );
       setRecommended(matches.filter(p => !p.applicants.includes(me.email)));
@@ -43,7 +43,7 @@ export default function Search() {
           <ul className="list-group mb-3">
             {recommended.map(r => (
               <li key={r.id} className="list-group-item">
-                <strong>{r.title}</strong> ({r.postType}) by {r.orgEmail}
+                <strong>{r.title}</strong> ({r.postType}) by {r.authorEmail}
                 <p>{r.description}</p>
               </li>
             ))}
@@ -53,7 +53,7 @@ export default function Search() {
           <ul className="list-group mb-3">
             {applied.map(r => (
               <li key={r.id} className="list-group-item">
-                <strong>{r.title}</strong> ({r.postType}) by {r.orgEmail}
+                <strong>{r.title}</strong> ({r.postType}) by {r.authorEmail}
                 <p>{r.description}</p>
               </li>
             ))}
@@ -63,7 +63,7 @@ export default function Search() {
           <ul className="list-group list-group-flush">
             {insights.map(r => (
               <li key={r.id} className="list-group-item">
-                <strong>{r.title}</strong> ({r.postType}) by {r.orgEmail}
+                <strong>{r.title}</strong> ({r.postType}) by {r.authorEmail}
                 <p>{r.description}</p>
               </li>
             ))}

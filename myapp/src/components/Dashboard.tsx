@@ -35,11 +35,28 @@ export default function Dashboard() {
     u => u.type === 'member' && u.email !== user.email
   );
   const orgsOffering = users.filter(
-    u => u.type === 'org' && posts.some(p => p.orgEmail === u.email)
+    u => u.type === 'org' && posts.some(p => p.authorEmail === u.email)
   );
   const otherOrgs = users.filter(
-    u => u.type === 'org' && !posts.some(p => p.orgEmail === u.email)
+    u => u.type === 'org' && !posts.some(p => p.authorEmail === u.email)
   );
+
+  const canComment = (p: any) => {
+    if (p.authorType === 'member') {
+      if (p.authorEmail === user.email) return true;
+      const contact = user.followers.includes(p.authorEmail);
+      const sameGroup = allGroups.some(
+        g => g.members.includes(user.email) && g.members.includes(p.authorEmail)
+      );
+      return contact || sameGroup;
+    }
+    if (p.authorType === 'org') {
+      return user.type === 'member';
+    }
+    return false;
+  };
+
+  const [commentText, setCommentText] = useState({} as any);
 
   return (
     <div>
@@ -217,9 +234,9 @@ export default function Dashboard() {
           <ul className="list-group list-group-flush">
             {posts.map(p => (
               <li key={p.id} className="list-group-item">
-                <strong>{p.title}</strong> ({p.postType}) by {p.orgEmail}
+                <strong>{p.title}</strong> ({p.postType}) by {p.authorEmail}
                 <p>{p.description}</p>
-              {user.type === 'member' && (
+                {user.type === 'member' && (
                   p.applicants.includes(user.email) ? (
                     <button
                       type="button"
@@ -232,9 +249,9 @@ export default function Dashboard() {
                         setPosts(all);
                       }}
                     >
-                    Withdraw
-                  </button>
-                ) : (
+                      Withdraw
+                    </button>
+                  ) : (
                     <button
                       type="button"
                       className="btn btn-sm btn-primary"
@@ -246,12 +263,56 @@ export default function Dashboard() {
                         setPosts(all);
                       }}
                     >
-                    Apply
-                  </button>
-                )
-              )}
-            </li>
-          ))}
+                      Apply
+                    </button>
+                  )
+                )}
+                <div className="mt-2">
+                  <strong>Comments</strong>
+                  <ul className="list-group mb-2">
+                    {p.comments.map((c: any, i: number) => (
+                      <li key={i} className="list-group-item">
+                        <small>{c.userEmail}</small>: {c.text}
+                      </li>
+                    ))}
+                  </ul>
+                  {canComment(p) && (
+                    <form
+                      className="d-flex"
+                      onSubmit={async e => {
+                        e.preventDefault();
+                        const text = commentText[p.id] || '';
+                        if (!text) return;
+                        const all = await getPosts();
+                        const idx = all.findIndex(x => x.id === p.id);
+                        all[idx].comments.push({
+                          userEmail: user.email,
+                          text,
+                          timestamp: Date.now(),
+                        });
+                        await savePosts(all);
+                        setPosts(all);
+                        setCommentText({ ...commentText, [p.id]: '' });
+                      }}
+                    >
+                      <input
+                        className="form-control form-control-sm me-2"
+                        value={commentText[p.id] || ''}
+                        onChange={e =>
+                          setCommentText({
+                            ...commentText,
+                            [p.id]: e.target.value,
+                          })
+                        }
+                      />
+                      <button type="submit" className="btn btn-sm btn-secondary">
+                        Comment
+                      </button>
+                    </form>
+                  )}
+                </div>
+              </li>
+            ))}
           </ul>
         </div>
       </div>

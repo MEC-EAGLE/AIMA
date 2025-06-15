@@ -114,7 +114,7 @@ export default function Jobs() {
             >
               <div className="d-flex justify-content-between">
                 <div>
-                  <strong>{p.title}</strong> ({p.postType}) by {p.orgEmail}
+                  <strong>{p.title}</strong> ({p.postType}) by {p.authorEmail}
                   {viewed.has(p.id) && <span className="badge bg-secondary ms-2">viewed</span>}
                   {saved.has(p.id) && <span className="badge bg-info text-dark ms-2">saved</span>}
                 </div>
