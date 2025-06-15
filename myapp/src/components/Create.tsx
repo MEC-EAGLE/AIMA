@@ -30,6 +30,7 @@ export default function Create() {
       postType,
       tags: [],
       applicants: [],
+      statuses: {},
       comments: [],
     });
     await savePosts(posts);

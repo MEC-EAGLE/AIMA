@@ -267,6 +267,13 @@ export default function Dashboard() {
                     </button>
                   )
                 )}
+                {p.applicants.includes(user.email) && (
+                  <div className="mt-2">
+                    <small className="text-muted">
+                      Status: {p.statuses[user.email] || 'applied'}
+                    </small>
+                  </div>
+                )}
                 <div className="mt-2">
                   <strong>Comments</strong>
                   <ul className="list-group mb-2">

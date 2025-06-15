@@ -1,23 +1,28 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Nav from './Nav';
-import { getPosts, savePosts } from '../utils';
+import { getPosts, savePosts, getUsers } from '../utils';
 
 export default function Jobs() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null as any);
   const [posts, setPosts] = useState([] as any[]);
+  const [users, setUsers] = useState([] as any[]);
   const [filter, setFilter] = useState('all');
   const [sort, setSort] = useState('recent');
   const [hidden, setHidden] = useState(new Set<number>());
   const [saved, setSaved] = useState(new Set<number>());
   const [viewed, setViewed] = useState(new Set<number>());
+  const [candidateQuery, setCandidateQuery] = useState('');
 
   useEffect(() => {
     const u = localStorage.getItem('currentUser');
     if (!u) return navigate('/login');
     setUser(JSON.parse(u));
-    getPosts().then(setPosts);
+    Promise.all([getPosts(), getUsers()]).then(([p, us]) => {
+      setPosts(p);
+      setUsers(us);
+    });
     setHidden(new Set(JSON.parse(localStorage.getItem('hiddenJobs') || '[]')));
     setSaved(new Set(JSON.parse(localStorage.getItem('savedJobs') || '[]')));
     setViewed(new Set(JSON.parse(localStorage.getItem('viewedJobs') || '[]')));
@@ -55,6 +60,7 @@ export default function Jobs() {
     const idx = all.findIndex(x => x.id === id);
     if (!all[idx].applicants.includes(user.email)) {
       all[idx].applicants.push(user.email);
+      all[idx].statuses[user.email] = 'applied';
       await savePosts(all);
       setPosts(all);
     }
@@ -64,8 +70,24 @@ export default function Jobs() {
     const all = await getPosts();
     const idx = all.findIndex(x => x.id === id);
     all[idx].applicants = all[idx].applicants.filter((a: string) => a !== user.email);
+    delete all[idx].statuses[user.email];
     await savePosts(all);
     setPosts(all);
+  };
+
+  const updateStatus = async (postId: number, email: string, status: string) => {
+    const all = await getPosts();
+    const idx = all.findIndex(x => x.id === postId);
+    all[idx].statuses[email] = status;
+    await savePosts(all);
+    setPosts(all);
+  };
+
+  const withdrawPost = async (postId: number) => {
+    const all = await getPosts();
+    const filtered = all.filter(p => p.id !== postId);
+    await savePosts(filtered);
+    setPosts(filtered);
   };
 
   const markViewed = (id: number) => {
@@ -75,6 +97,80 @@ export default function Jobs() {
     localStorage.setItem('viewedJobs', JSON.stringify(Array.from(v)));
     setViewed(v);
   };
+
+  if (user.type === 'org') {
+    const mine = posts.filter(p => p.authorEmail === user.email);
+    const candidates = users.filter(
+      u =>
+        u.type === 'member' &&
+        candidateQuery &&
+        u.skills &&
+        u.skills.some((s: string) =>
+          s.toLowerCase().includes(candidateQuery.toLowerCase())
+        )
+    );
+    return (
+      <div>
+        <Nav />
+        <div className="container my-4">
+          <h2>Your Job Posts</h2>
+          <a href="/create" className="btn btn-primary mb-3">
+            Post a Job
+          </a>
+          {mine.map(p => (
+            <div key={p.id} className="card mb-3">
+              <div className="card-body">
+                <h5 className="card-title">{p.title}</h5>
+                <p>{p.description}</p>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-danger mb-3"
+                  onClick={() => withdrawPost(p.id)}
+                >
+                  Withdraw Post
+                </button>
+                <h6>Applicants</h6>
+                <ul className="list-group mb-2">
+                  {p.applicants.map(a => (
+                    <li key={a} className="list-group-item">
+                      {(users.find(u => u.email === a)?.skills || []).join(', ') ||
+                        'No skills'}
+                      <select
+                        className="form-select form-select-sm mt-1"
+                        value={p.statuses[a] || 'applied'}
+                        onChange={e => updateStatus(p.id, a, e.target.value)}
+                      >
+                        <option value="applied">applied</option>
+                        <option value="review">review</option>
+                        <option value="interview">interview</option>
+                        <option value="offer">offer</option>
+                      </select>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))}
+          <div className="mt-4">
+            <h4>Search Candidates</h4>
+            <input
+              className="form-control mb-2"
+              placeholder="Search by skill"
+              value={candidateQuery}
+              onChange={e => setCandidateQuery(e.target.value)}
+            />
+            <ul className="list-group">
+              {candidates.map(c => (
+                <li key={c.email} className="list-group-item">
+                  {c.email} - {(c.skills || []).join(', ')}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -115,8 +211,12 @@ export default function Jobs() {
               <div className="d-flex justify-content-between">
                 <div>
                   <strong>{p.title}</strong> ({p.postType}) by {p.authorEmail}
-                  {viewed.has(p.id) && <span className="badge bg-secondary ms-2">viewed</span>}
-                  {saved.has(p.id) && <span className="badge bg-info text-dark ms-2">saved</span>}
+                  {viewed.has(p.id) && (
+                    <span className="badge bg-secondary ms-2">viewed</span>
+                  )}
+                  {saved.has(p.id) && (
+                    <span className="badge bg-info text-dark ms-2">saved</span>
+                  )}
                 </div>
                 <div>
                   <button

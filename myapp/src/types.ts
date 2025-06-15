@@ -2,10 +2,12 @@ export interface User {
   email: string;
   password: string;
   phone: string;
+  contactName: string;
   type: 'member' | 'org' | 'admin';
   verified: boolean;
   followers: string[];
   groups: number[];
+  skills?: string[];
 }
 
 export interface Comment {
@@ -23,6 +25,7 @@ export interface Post {
   postType: 'job' | 'internship' | 'volunteering' | 'project';
   tags: string[];
   applicants: string[];
+  statuses: Record<string, string>;
   comments: Comment[];
 }
 

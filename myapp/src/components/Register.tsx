@@ -6,13 +6,36 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
+  const [contactName, setContactName] = useState('');
   const [type, setType] = useState('member');
+  const [skills, setSkills] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    const generic = ['info@', 'contact@', 'noreply@'];
+    if (type === 'org' && generic.some(g => email.startsWith(g))) {
+      alert('Please use a real contact email for your organization.');
+      return;
+    }
     const users = await getUsers();
-    users.push({ email, password, phone, type, verified: false, followers: [], groups: [] });
+    const newUser: any = {
+      email,
+      password,
+      phone,
+      contactName,
+      type,
+      verified: false,
+      followers: [],
+      groups: [],
+    };
+    if (type === 'member') {
+      newUser.skills = skills
+        .split(',')
+        .map((s: string) => s.trim())
+        .filter((s: string) => s);
+    }
+    users.push(newUser);
     await saveUsers(users);
     alert('Verification link sent. Please verify to activate your account.');
     navigate(`/verify?email=${encodeURIComponent(email)}`);
@@ -45,6 +68,15 @@ export default function Register() {
           />
         </div>
         <div className="mb-3">
+          <label className="form-label">Contact Name</label>
+          <input
+            className="form-control"
+            value={contactName}
+            onChange={e => setContactName(e.target.value)}
+            required
+          />
+        </div>
+        <div className="mb-3">
           <label className="form-label">Password</label>
           <input
             type="password"
@@ -61,6 +93,16 @@ export default function Register() {
             <option value="org">Organization</option>
           </select>
         </div>
+        {type === 'member' && (
+          <div className="mb-3">
+            <label className="form-label">Skills (comma separated)</label>
+            <input
+              className="form-control"
+              value={skills}
+              onChange={e => setSkills(e.target.value)}
+            />
+          </div>
+        )}
             <button type="submit" className="btn btn-primary">
               Register
             </button>
