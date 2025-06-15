@@ -9,18 +9,23 @@ export default function Login() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const users = await getUsers();
-    const found = users.find((u: any) => u.email === email && u.password === password);
-    if (found) {
-      if (!found.verified) {
-        alert('Please verify your account first.');
-        navigate(`/verify?email=${encodeURIComponent(email)}`);
-        return;
+    try {
+      const users = await getUsers();
+      const found = users.find((u: any) => u.email === email && u.password === password);
+      if (found) {
+        if (!found.verified) {
+          alert('Please verify your account first.');
+          navigate(`/verify?email=${encodeURIComponent(email)}`);
+          return;
+        }
+        localStorage.setItem('currentUser', JSON.stringify(found));
+        navigate('/dashboard');
+      } else {
+        alert('Invalid credentials');
       }
-      localStorage.setItem('currentUser', JSON.stringify(found));
-      navigate('/dashboard');
-    } else {
-      alert('Invalid credentials');
+    } catch (err) {
+      console.error(err);
+      alert('Failed to fetch users');
     }
   };
 

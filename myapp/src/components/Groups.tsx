@@ -6,17 +6,31 @@ export default function Groups({ userEmail }: { userEmail: string }) {
   const [groups, setGroups] = useState([] as any[]);
 
   useEffect(() => {
-    getGroups().then(all => setGroups(all.filter(g => g.members.includes(userEmail))));
+    async function load() {
+      try {
+        const all = await getGroups();
+        setGroups(all.filter(g => g.members.includes(userEmail)));
+      } catch (err) {
+        console.error(err);
+        alert('Failed to fetch groups');
+      }
+    }
+    load();
   }, [userEmail]);
 
   const createGroup = async () => {
     if (!name) return;
-    const all = await getGroups();
-    const id = Date.now();
-    all.push({ id, name, members: [userEmail] });
-    await saveGroups(all);
-    setGroups(all.filter(g => g.members.includes(userEmail)));
-    setName('');
+    try {
+      const all = await getGroups();
+      const id = Date.now();
+      all.push({ id, name, members: [userEmail] });
+      await saveGroups(all);
+      setGroups(all.filter(g => g.members.includes(userEmail)));
+      setName('');
+    } catch (err) {
+      console.error(err);
+      alert('Failed to create group');
+    }
   };
 
   return (

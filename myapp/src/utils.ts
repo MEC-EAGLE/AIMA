@@ -3,16 +3,30 @@ import { User, Post, Group, Message } from './types';
 const API = 'http://localhost:3001';
 
 async function fetchJSON(key: string): Promise<any> {
-  const res = await fetch(`${API}/${key}`);
-  return res.json();
+  try {
+    const res = await fetch(`${API}/${key}`);
+    if (!res.ok) {
+      throw new Error(`Failed to fetch ${key}: ${res.status} ${res.statusText}`);
+    }
+    return await res.json();
+  } catch (err: any) {
+    throw new Error(`Request failed for ${key}: ${err instanceof Error ? err.message : err}`);
+  }
 }
 
 async function postJSON(key: string, data: any): Promise<void> {
-  await fetch(`${API}/${key}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  });
+  try {
+    const res = await fetch(`${API}/${key}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      throw new Error(`Failed to post ${key}: ${res.status} ${res.statusText}`);
+    }
+  } catch (err: any) {
+    throw new Error(`Request failed for ${key}: ${err instanceof Error ? err.message : err}`);
+  }
 }
 
 export async function getUsers(): Promise<User[]> {
