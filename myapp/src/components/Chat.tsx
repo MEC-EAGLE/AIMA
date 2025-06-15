@@ -1,23 +1,37 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { getMessages, saveMessages } from '../utils';
+import { getMessages, saveMessages, getGroups } from '../utils';
 
 export default function Chat() {
   const { email } = useParams();
   const current = JSON.parse(localStorage.getItem('currentUser') || '{}');
   const [text, setText] = useState('');
   const [msgs, setMsgs] = useState([] as any[]);
+  const [targetName, setTargetName] = useState(email || '');
 
   useEffect(() => {
     getMessages().then(all =>
       setMsgs(
-        all.filter(
-          m =>
+        all.filter(m => {
+          if (email?.startsWith('group-')) {
+            return m.to === email;
+          }
+          return (
             (m.from === current.email && m.to === email) ||
             (m.from === email && m.to === current.email)
-        )
+          );
+        })
       )
     );
+    if (email?.startsWith('group-')) {
+      const id = parseInt(email.slice(6), 10);
+      getGroups().then(gs => {
+        const g = gs.find(x => x.id === id);
+        setTargetName(g ? g.name : email);
+      });
+    } else {
+      setTargetName(email || '');
+    }
   }, [email]);
 
   const send = async () => {
@@ -26,11 +40,15 @@ export default function Chat() {
     all.push({ from: current.email, to: email!, text, timestamp: Date.now() });
     await saveMessages(all);
     setMsgs(
-      all.filter(
-        m =>
+      all.filter(m => {
+        if (email?.startsWith('group-')) {
+          return m.to === email;
+        }
+        return (
           (m.from === current.email && m.to === email) ||
           (m.from === email && m.to === current.email)
-      )
+        );
+      })
     );
     setText('');
   };
@@ -39,7 +57,7 @@ export default function Chat() {
     <div className="container my-4" style={{ maxWidth: '500px' }}>
       <div className="card">
         <div className="card-body">
-          <h3 className="card-title">Chat with {email}</h3>
+          <h3 className="card-title">Chat with {targetName}</h3>
           <div
             style={{
               height: '200px',
