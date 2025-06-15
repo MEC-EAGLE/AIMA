@@ -1,22 +1,37 @@
 import { useParams } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getMessages, saveMessages } from '../utils';
 
 export default function Chat() {
   const { email } = useParams();
   const current = JSON.parse(localStorage.getItem('currentUser') || '{}');
   const [text, setText] = useState('');
-  const msgs = getMessages().filter(
-    m =>
-      (m.from === current.email && m.to === email) ||
-      (m.from === email && m.to === current.email)
-  );
+  const [msgs, setMsgs] = useState([] as any[]);
 
-  const send = () => {
+  useEffect(() => {
+    getMessages().then(all =>
+      setMsgs(
+        all.filter(
+          m =>
+            (m.from === current.email && m.to === email) ||
+            (m.from === email && m.to === current.email)
+        )
+      )
+    );
+  }, [email]);
+
+  const send = async () => {
     if (!text) return;
-    const all = getMessages();
+    const all = await getMessages();
     all.push({ from: current.email, to: email!, text, timestamp: Date.now() });
-    saveMessages(all);
+    await saveMessages(all);
+    setMsgs(
+      all.filter(
+        m =>
+          (m.from === current.email && m.to === email) ||
+          (m.from === email && m.to === current.email)
+      )
+    );
     setText('');
   };
 

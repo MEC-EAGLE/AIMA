@@ -6,12 +6,12 @@ export default function Verify() {
   const navigate = useNavigate();
   const email = params.get('email') || '';
 
-  const handleVerify = () => {
-    const users = getUsers();
+  const handleVerify = async () => {
+    const users = await getUsers();
     const idx = users.findIndex(u => u.email === email);
     if (idx !== -1) {
       users[idx].verified = true;
-      saveUsers(users);
+      await saveUsers(users);
       alert('Account verified! You can now login.');
       navigate('/login');
     }

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { getUsers, saveUsers } from '../utils';
 
 export default function Register() {
   const [email, setEmail] = useState('');
@@ -8,11 +9,11 @@ export default function Register() {
   const [type, setType] = useState('member');
   const navigate = useNavigate();
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const users = await getUsers();
     users.push({ email, password, phone, type, verified: false, followers: [], groups: [] });
-    localStorage.setItem('users', JSON.stringify(users));
+    await saveUsers(users);
     alert('Verification link sent. Please verify to activate your account.');
     navigate(`/verify?email=${encodeURIComponent(email)}`);
   };

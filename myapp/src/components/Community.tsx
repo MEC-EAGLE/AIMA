@@ -12,11 +12,11 @@ export default function Community() {
     if (!u) return navigate('/login');
     const me = JSON.parse(u);
     setCurrent(me);
-    setUsers(getUsers().filter(x => x.email !== me.email));
+    getUsers().then(all => setUsers(all.filter(x => x.email !== me.email)));
   }, [navigate]);
 
-  const toggleFollow = (email: string) => {
-    const all = getUsers();
+  const toggleFollow = async (email: string) => {
+    const all = await getUsers();
     const idx = all.findIndex(u => u.email === current.email);
     const followers = new Set(all[idx].followers);
     if (followers.has(email)) {
@@ -25,9 +25,9 @@ export default function Community() {
       followers.add(email);
     }
     all[idx].followers = Array.from(followers);
-    saveUsers(all);
+    await saveUsers(all);
     localStorage.setItem('currentUser', JSON.stringify(all[idx]));
-    setUsers(getUsers().filter(x => x.email !== all[idx].email));
+    setUsers(all.filter(x => x.email !== all[idx].email));
   };
 
   if (!current) return null;

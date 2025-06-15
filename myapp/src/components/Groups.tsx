@@ -1,16 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getGroups, saveGroups } from '../utils';
 
 export default function Groups({ userEmail }: { userEmail: string }) {
   const [name, setName] = useState('');
-  const groups = getGroups().filter(g => g.members.includes(userEmail));
+  const [groups, setGroups] = useState([] as any[]);
 
-  const createGroup = () => {
+  useEffect(() => {
+    getGroups().then(all => setGroups(all.filter(g => g.members.includes(userEmail))));
+  }, [userEmail]);
+
+  const createGroup = async () => {
     if (!name) return;
-    const all = getGroups();
+    const all = await getGroups();
     const id = Date.now();
     all.push({ id, name, members: [userEmail] });
-    saveGroups(all);
+    await saveGroups(all);
+    setGroups(all.filter(g => g.members.includes(userEmail)));
     setName('');
   };
 

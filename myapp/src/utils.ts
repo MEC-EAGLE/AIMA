@@ -1,33 +1,48 @@
 import { User, Post, Group, Message } from './types';
 
-export function getUsers(): User[] {
-  return JSON.parse(localStorage.getItem('users') || '[]');
+const API = 'http://localhost:3001';
+
+async function fetchJSON(key: string): Promise<any> {
+  const res = await fetch(`${API}/${key}`);
+  return res.json();
 }
 
-export function saveUsers(users: User[]) {
-  localStorage.setItem('users', JSON.stringify(users));
+async function postJSON(key: string, data: any): Promise<void> {
+  await fetch(`${API}/${key}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
 }
 
-export function getPosts(): Post[] {
-  return JSON.parse(localStorage.getItem('posts') || '[]');
+export async function getUsers(): Promise<User[]> {
+  return await fetchJSON('users');
 }
 
-export function savePosts(posts: Post[]) {
-  localStorage.setItem('posts', JSON.stringify(posts));
+export async function saveUsers(users: User[]) {
+  await postJSON('users', users);
 }
 
-export function getGroups(): Group[] {
-  return JSON.parse(localStorage.getItem('groups') || '[]');
+export async function getPosts(): Promise<Post[]> {
+  return await fetchJSON('posts');
 }
 
-export function saveGroups(groups: Group[]) {
-  localStorage.setItem('groups', JSON.stringify(groups));
+export async function savePosts(posts: Post[]) {
+  await postJSON('posts', posts);
 }
 
-export function getMessages(): Message[] {
-  return JSON.parse(localStorage.getItem('messages') || '[]');
+export async function getGroups(): Promise<Group[]> {
+  return await fetchJSON('groups');
 }
 
-export function saveMessages(msgs: Message[]) {
-  localStorage.setItem('messages', JSON.stringify(msgs));
+export async function saveGroups(groups: Group[]) {
+  await postJSON('groups', groups);
+}
+
+export async function getMessages(): Promise<Message[]> {
+  return await fetchJSON('messages');
+}
+
+export async function saveMessages(msgs: Message[]) {
+  await postJSON('messages', msgs);
 }

@@ -23,11 +23,11 @@ export default function Create() {
 
   if (!user) return null;
 
-  const submit = (e: any) => {
+  const submit = async (e: any) => {
     e.preventDefault();
-    const posts = getPosts();
+    const posts = await getPosts();
     posts.push({ id: Date.now(), orgEmail: user.email, title, description, postType, tags: [], applicants: [] });
-    savePosts(posts);
+    await savePosts(posts);
     alert('Created!');
     navigate('/dashboard');
   };

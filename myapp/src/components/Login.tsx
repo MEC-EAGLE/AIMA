@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { getUsers } from '../utils';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const users = await getUsers();
     const found = users.find((u: any) => u.email === email && u.password === password);
     if (found) {
       if (!found.verified) {

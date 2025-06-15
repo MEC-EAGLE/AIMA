@@ -16,7 +16,7 @@ export default function Dashboard() {
     } else {
       const parsed = JSON.parse(u);
       setUser(parsed);
-      setPosts(getPosts());
+      getPosts().then(setPosts);
     }
   }, [navigate]);
 
@@ -38,30 +38,30 @@ export default function Dashboard() {
                 <strong>{p.title}</strong> ({p.postType}) by {p.orgEmail}
                 <p>{p.description}</p>
               {user.type === 'member' && (
-                p.applicants.includes(user.email) ? (
-                  <button
-                    className="btn btn-sm btn-warning"
-                    onClick={() => {
-                      const all = getPosts();
-                      const idx = all.findIndex(x => x.id === p.id);
-                      all[idx].applicants = all[idx].applicants.filter((a: string) => a !== user.email);
-                      savePosts(all);
-                      setPosts(all);
-                    }}
-                  >
+                  p.applicants.includes(user.email) ? (
+                    <button
+                      className="btn btn-sm btn-warning"
+                      onClick={async () => {
+                        const all = await getPosts();
+                        const idx = all.findIndex(x => x.id === p.id);
+                        all[idx].applicants = all[idx].applicants.filter((a: string) => a !== user.email);
+                        await savePosts(all);
+                        setPosts(all);
+                      }}
+                    >
                     Withdraw
                   </button>
                 ) : (
-                  <button
-                    className="btn btn-sm btn-primary"
-                    onClick={() => {
-                      const all = getPosts();
-                      const idx = all.findIndex(x => x.id === p.id);
-                      all[idx].applicants.push(user.email);
-                      savePosts(all);
-                      setPosts(all);
-                    }}
-                  >
+                    <button
+                      className="btn btn-sm btn-primary"
+                      onClick={async () => {
+                        const all = await getPosts();
+                        const idx = all.findIndex(x => x.id === p.id);
+                        all[idx].applicants.push(user.email);
+                        await savePosts(all);
+                        setPosts(all);
+                      }}
+                    >
                     Apply
                   </button>
                 )

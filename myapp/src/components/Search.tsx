@@ -6,9 +6,10 @@ export default function Search() {
   const [results, setResults] = useState([] as any[]);
 
   useEffect(() => {
-    const posts = getPosts();
-    const q = query.toLowerCase();
-    setResults(posts.filter(p => p.title.toLowerCase().includes(q) || p.orgEmail.toLowerCase().includes(q)));
+    getPosts().then(posts => {
+      const q = query.toLowerCase();
+      setResults(posts.filter(p => p.title.toLowerCase().includes(q) || p.orgEmail.toLowerCase().includes(q)));
+    });
   }, [query]);
 
   return (
