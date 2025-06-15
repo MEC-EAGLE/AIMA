@@ -37,6 +37,11 @@ export default function Nav() {
               </Link>
             </li>
             <li className="nav-item">
+              <Link className="nav-link" to="/jobs">
+                Jobs
+              </Link>
+            </li>
+            <li className="nav-item">
               <Link className="nav-link" to="/search">
                 Search
               </Link>

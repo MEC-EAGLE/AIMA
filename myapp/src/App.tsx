@@ -13,6 +13,7 @@ import Create from './components/Create';
 import Community from './components/Community';
 import Search from './components/Search';
 import Chat from './components/Chat';
+import Jobs from './components/Jobs';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/create" element={<Create />} />
         <Route path="/community" element={<Community />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/jobs" element={<Jobs />} />
         <Route path="/verify" element={<Verify />} />
         <Route path="/chat/:email" element={<Chat />} />
         <Route path="*" element={<Navigate to="/" />} />
