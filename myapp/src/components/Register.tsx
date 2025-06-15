@@ -11,11 +11,24 @@ export default function Register() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const users = await getUsers();
-    users.push({ email, password, phone, type, verified: false, followers: [], groups: [] });
-    await saveUsers(users);
-    alert('Verification link sent. Please verify to activate your account.');
-    navigate(`/verify?email=${encodeURIComponent(email)}`);
+    try {
+      const users = await getUsers();
+      users.push({
+        email,
+        password,
+        phone,
+        type,
+        verified: false,
+        followers: [],
+        groups: [],
+      });
+      await saveUsers(users);
+      alert('Verification link sent. Please verify to activate your account.');
+      navigate(`/verify?email=${encodeURIComponent(email)}`);
+    } catch (err) {
+      console.error(err);
+      alert('Unable to connect to the server.');
+    }
   };
 
   return (
