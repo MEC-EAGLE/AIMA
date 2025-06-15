@@ -8,7 +8,7 @@ export default function Register() {
   const [type, setType] = useState('member');
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     const users = JSON.parse(localStorage.getItem('users') || '[]');
     users.push({ email, password, phone, type, verified: false, followers: [], groups: [] });

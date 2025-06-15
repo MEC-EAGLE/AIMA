@@ -4,7 +4,7 @@ import { getPosts, savePosts } from '../utils';
 
 export default function Create() {
   const navigate = useNavigate();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState(null as any);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [postType, setPostType] = useState('job');
@@ -23,7 +23,7 @@ export default function Create() {
 
   if (!user) return null;
 
-  const submit = (e: React.FormEvent) => {
+  const submit = (e: any) => {
     e.preventDefault();
     const posts = getPosts();
     posts.push({ id: Date.now(), orgEmail: user.email, title, description, postType, tags: [], applicants: [] });

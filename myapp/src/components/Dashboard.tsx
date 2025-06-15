@@ -6,8 +6,8 @@ import { getPosts, savePosts } from '../utils';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [user, setUser] = useState<any>(null);
-  const [posts, setPosts] = useState<any[]>([]);
+  const [user, setUser] = useState(null as any);
+  const [posts, setPosts] = useState([] as any[]);
 
   useEffect(() => {
     const u = localStorage.getItem('currentUser');

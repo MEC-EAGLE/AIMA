@@ -6,7 +6,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     const users = JSON.parse(localStorage.getItem('users') || '[]');
     const found = users.find((u: any) => u.email === email && u.password === password);

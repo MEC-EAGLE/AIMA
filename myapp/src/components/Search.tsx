@@ -3,7 +3,7 @@ import { getPosts } from '../utils';
 
 export default function Search() {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState([] as any[]);
 
   useEffect(() => {
     const posts = getPosts();

@@ -3,8 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getUsers, saveUsers } from '../utils';
 
 export default function Community() {
-  const [current, setCurrent] = useState<any>(null);
-  const [users, setUsers] = useState<any[]>([]);
+  const [current, setCurrent] = useState(null as any);
+  const [users, setUsers] = useState([] as any[]);
   const navigate = useNavigate();
 
   useEffect(() => {
