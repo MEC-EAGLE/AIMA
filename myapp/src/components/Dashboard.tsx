@@ -47,48 +47,59 @@ export default function Dashboard() {
         <h2>Dashboard</h2>
         <p>Welcome, Funny Bunny!</p>
 
-        <h4>Member Settings</h4>
+        <nav className="nav nav-pills flex-wrap mb-3">
+          <a className="nav-link" href="#settings">Member settings</a>
+          <a className="nav-link" href="#profile">Member profile</a>
+          <a className="nav-link" href="#member-groups">Your groups</a>
+          <a className="nav-link" href="#other-members">Other members</a>
+          <a className="nav-link" href="#all-groups">All groups</a>
+          <a className="nav-link" href="#orgs-offering">Orgs offering work</a>
+          <a className="nav-link" href="#other-orgs">Other orgs</a>
+          <a className="nav-link" href="#help">Help</a>
+        </nav>
+
+        <h4 id="settings">Member Settings</h4>
         <p>Email: {user.email}<br />Phone: {user.phone}</p>
 
-        <h4>Member Profile</h4>
+        <h4 id="profile">Member Profile</h4>
         <p>User type: {user.type}</p>
 
-        <h4>Your Groups</h4>
+        <h4 id="member-groups">Your Groups</h4>
         <ul className="list-group mb-3">
           {memberGroups.map(g => (
             <li key={g.id} className="list-group-item">{g.name}</li>
           ))}
         </ul>
 
-        <h4>Other Members</h4>
+        <h4 id="other-members">Other Members</h4>
         <ul className="list-group mb-3">
           {otherMembers.map(m => (
             <li key={m.email} className="list-group-item">{m.email}</li>
           ))}
         </ul>
 
-        <h4>All Groups</h4>
+        <h4 id="all-groups">All Groups</h4>
         <ul className="list-group mb-3">
           {allGroups.map(g => (
             <li key={g.id} className="list-group-item">{g.name}</li>
           ))}
         </ul>
 
-        <h4>Organizations Offering Work</h4>
+        <h4 id="orgs-offering">Organizations Offering Work</h4>
         <ul className="list-group mb-3">
           {orgsOffering.map(o => (
             <li key={o.email} className="list-group-item">{o.email}</li>
           ))}
         </ul>
 
-        <h4>Other Organizations</h4>
+        <h4 id="other-orgs">Other Organizations</h4>
         <ul className="list-group mb-3">
           {otherOrgs.map(o => (
             <li key={o.email} className="list-group-item">{o.email}</li>
           ))}
         </ul>
 
-        <h4>Help</h4>
+        <h4 id="help">Help</h4>
         <p>Contact support for assistance.</p>
 
         <h4>Opportunities</h4>
