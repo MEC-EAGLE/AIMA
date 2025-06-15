@@ -1,5 +1,5 @@
 const http = require('http');
-const prism = require('./prism-db');
+const prism = require('./prism-db.cjs');
 const PORT = 3001;
 
 
