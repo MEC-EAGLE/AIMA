@@ -1,6 +1,12 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { getMessages, saveMessages, getGroups, getUsers } from '../utils';
+import {
+  getMessages,
+  saveMessages,
+  getGroups,
+  getUsers,
+  saveGroups,
+} from '../utils';
 
 export default function Chat() {
   const { email } = useParams();
@@ -9,6 +15,8 @@ export default function Chat() {
   const [msgs, setMsgs] = useState([] as any[]);
   const [targetName, setTargetName] = useState(email || '');
   const [canChat, setCanChat] = useState(true);
+  const [files, setFiles] = useState([] as { name: string; data: string }[]);
+  const [group, setGroup] = useState<any>(null);
 
   useEffect(() => {
     getMessages().then(all =>
@@ -37,6 +45,7 @@ export default function Chat() {
       const id = parseInt(email.slice(6), 10);
       getGroups().then(gs => {
         const g = gs.find(x => x.id === id);
+        setGroup(g);
         setTargetName(g ? g.name : email);
       });
     } else {
@@ -45,9 +54,15 @@ export default function Chat() {
   }, [email]);
 
   const send = async () => {
-    if (!text || !canChat) return;
+    if ((!text && files.length === 0) || !canChat) return;
     const all = await getMessages();
-    all.push({ from: current.email, to: email!, text, timestamp: Date.now() });
+    all.push({
+      from: current.email,
+      to: email!,
+      text,
+      timestamp: Date.now(),
+      attachments: files.length > 0 ? files : undefined,
+    });
     await saveMessages(all);
     setMsgs(
       all.filter(m => {
@@ -61,6 +76,27 @@ export default function Chat() {
       })
     );
     setText('');
+    setFiles([]);
+  };
+
+  const inviteToGroup = async () => {
+    if (!email?.startsWith('group-') || !group) return;
+    const memberEmail = prompt('Enter member email to invite');
+    if (!memberEmail) return;
+    const us = await getUsers();
+    const target = us.find(u => u.email === memberEmail && u.type === 'member');
+    if (!target) {
+      alert('Member not found');
+      return;
+    }
+    const all = await getGroups();
+    const idx = all.findIndex(g => g.id === group.id);
+    if (idx === -1) return;
+    if (!all[idx].members.includes(memberEmail)) {
+      all[idx].members.push(memberEmail);
+      await saveGroups(all);
+      setGroup(all[idx]);
+    }
   };
 
   return (
@@ -80,8 +116,50 @@ export default function Chat() {
               <div key={i} className={m.from === current.email ? 'text-end' : 'text-start'}>
                 <small>{m.from === current.email ? 'You' : m.from}</small>
                 <p>{m.text}</p>
+                {m.attachments && m.attachments.map((a: any, j: number) => (
+                  <div key={j}>
+                    <a href={a.data} download={a.name}>
+                      {a.name}
+                    </a>
+                  </div>
+                ))}
               </div>
             ))}
+          </div>
+          {files.length > 0 && (
+            <ul className="list-group mb-2">
+              {files.map((f, i) => (
+                <li key={i} className="list-group-item p-1">
+                  {f.name}
+                </li>
+              ))}
+            </ul>
+          )}
+          <div className="mb-2">
+            <input
+              type="file"
+              multiple
+              className="form-control form-control-sm"
+              onChange={e => {
+                const fl = Array.from(e.target.files || []);
+                Promise.all(
+                  fl.map(
+                    f =>
+                      new Promise<string>((res, rej) => {
+                        const reader = new FileReader();
+                        reader.onload = () => res(reader.result as string);
+                        reader.onerror = () => rej();
+                        reader.readAsDataURL(f);
+                      })
+                  )
+                ).then(data =>
+                  setFiles(
+                    data.map((d, idx) => ({ name: fl[idx].name, data: d }))
+                  )
+                );
+              }}
+              disabled={!canChat}
+            />
           </div>
           <div className="input-group mt-2">
             <input
@@ -94,6 +172,11 @@ export default function Chat() {
               Send
             </button>
           </div>
+          {email?.startsWith('group-') && group && group.members.includes(current.email) && (
+            <button type="button" className="btn btn-sm btn-outline-secondary mt-2" onClick={inviteToGroup}>
+              Invite Member
+            </button>
+          )}
           {!canChat && (
             <div className="text-danger mt-2">Messaging is unavailable (blocked or snoozed)</div>
           )}

@@ -53,11 +53,17 @@ export interface Group {
   members: string[];
 }
 
+export interface Attachment {
+  name: string;
+  data: string;
+}
+
 export interface Message {
   from: string;
   to: string;
   text: string;
   timestamp: number;
+  attachments?: Attachment[];
 }
 
 export interface CalendarEvent {
