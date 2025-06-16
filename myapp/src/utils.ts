@@ -11,16 +11,27 @@ export async function hashString(str: string): Promise<string> {
 const API = 'http://localhost:3001';
 
 async function fetchJSON(key: string): Promise<any> {
-  const res = await fetch(`${API}/${key}`);
-  return res.json();
+  try {
+    const res = await fetch(`${API}/${key}`);
+    if (!res.ok) throw new Error('Server response not OK');
+    return await res.json();
+  } catch (err) {
+    console.error('Fetch failed for', key, err);
+    throw err;
+  }
 }
 
 async function postJSON(key: string, data: any): Promise<void> {
-  await fetch(`${API}/${key}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  });
+  try {
+    await fetch(`${API}/${key}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+  } catch (err) {
+    console.error('Post failed for', key, err);
+    throw err;
+  }
 }
 
 export async function getUsers(): Promise<User[]> {

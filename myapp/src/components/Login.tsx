@@ -9,19 +9,25 @@ export default function Login() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const users = await getUsers();
-    const hashed = await hashString(password);
-    const found = users.find((u: any) => u.email === email && u.password === hashed);
-    if (found) {
-      if (!found.verified) {
-        alert('Please verify your account first.');
-        navigate(`/verify?email=${encodeURIComponent(email)}`);
-        return;
+    try {
+      const users = await getUsers();
+      const hashed = await hashString(password);
+      const found = users.find(
+        (u: any) => u.email === email && u.password === hashed
+      );
+      if (found) {
+        if (!found.verified) {
+          alert('Please verify your account first.');
+          navigate(`/verify?email=${encodeURIComponent(email)}`);
+          return;
+        }
+        localStorage.setItem('currentUser', JSON.stringify(found));
+        navigate('/dashboard');
+      } else {
+        alert('Invalid credentials');
       }
-      localStorage.setItem('currentUser', JSON.stringify(found));
-      navigate('/dashboard');
-    } else {
-      alert('Invalid credentials');
+    } catch {
+      alert('Unable to connect to the database server.');
     }
   };
 
