@@ -6,6 +6,7 @@ export default function Community() {
   const [current, setCurrent] = useState(null as any);
   const [users, setUsers] = useState([] as any[]);
   const [groups, setGroups] = useState([] as any[]);
+  const [newGroupName, setNewGroupName] = useState('');
   const [view, setView] = useState('members' as 'members' | 'groups');
   const navigate = useNavigate();
 
@@ -45,6 +46,36 @@ export default function Community() {
     all[idx].members = Array.from(members);
     await saveGroups(all);
     setGroups(all);
+  };
+
+  const createGroup = async () => {
+    const name = newGroupName.trim();
+    if (!name) return;
+    const all = await getGroups();
+    const id = Date.now();
+    all.push({ id, name, members: [current.email] });
+    await saveGroups(all);
+    setGroups(all);
+    setNewGroupName('');
+  };
+
+  const inviteToGroup = async (id: number) => {
+    const email = prompt('Enter member email to invite');
+    if (!email) return;
+    const us = await getUsers();
+    const target = us.find(u => u.email === email && u.type === 'member');
+    if (!target) {
+      alert('Member not found');
+      return;
+    }
+    const all = await getGroups();
+    const idx = all.findIndex(g => g.id === id);
+    if (idx === -1) return;
+    if (!all[idx].members.includes(email)) {
+      all[idx].members.push(email);
+      await saveGroups(all);
+      setGroups(all);
+    }
   };
 
   const requestProfile = async (email: string) => {
@@ -182,31 +213,57 @@ export default function Community() {
             </ul>
           )}
           {view === 'groups' && (
-            <ul className="list-group list-group-flush">
-              {groups.map(g => (
-                <li
-                  key={g.id}
-                  className="list-group-item d-flex justify-content-between align-items-center"
+            <div>
+              <ul className="list-group list-group-flush">
+                {groups.map(g => (
+                  <li
+                    key={g.id}
+                    className="list-group-item d-flex justify-content-between align-items-center"
+                  >
+                    <span>{g.name}</span>
+                    <div>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-primary me-2"
+                        onClick={() => toggleJoinGroup(g.id)}
+                      >
+                        {g.members.includes(current.email) ? 'Leave' : 'Join'}
+                      </button>
+                      <Link
+                        to={`/chat/group-${g.id}`}
+                        className="btn btn-sm btn-secondary me-2"
+                      >
+                        Message
+                      </Link>
+                      {g.members.includes(current.email) && (
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-outline-secondary"
+                          onClick={() => inviteToGroup(g.id)}
+                        >
+                          Invite
+                        </button>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              <div className="input-group mt-3">
+                <input
+                  className="form-control"
+                  value={newGroupName}
+                  onChange={e => setNewGroupName(e.target.value)}
+                  placeholder="New group"
+                />
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={createGroup}
                 >
-                  <span>{g.name}</span>
-                  <div>
-                    <button
-                      type="button"
-                      className="btn btn-sm btn-outline-primary me-2"
-                      onClick={() => toggleJoinGroup(g.id)}
-                    >
-                      {g.members.includes(current.email) ? 'Leave' : 'Join'}
-                    </button>
-                    <Link
-                      to={`/chat/group-${g.id}`}
-                      className="btn btn-sm btn-secondary"
-                    >
-                      Message
-                    </Link>
-                  </div>
-                </li>
-              ))}
-            </ul>
+                  Create
+                </button>
+              </div>
+            </div>
           )}
         </div>
       </div>
