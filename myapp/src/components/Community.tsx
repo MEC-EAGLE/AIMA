@@ -58,6 +58,33 @@ export default function Community() {
     }
   };
 
+  const profileComplete = (u: any) =>
+    u.skills && u.skills.length > 0 && u.bio && u.resume;
+
+  const recommend = async (email: string) => {
+    const target = users.find(x => x.email === email);
+    if (!profileComplete(current)) {
+      alert('Complete your profile before giving a recommendation.');
+      return;
+    }
+    if (!target || !profileComplete(target)) {
+      alert('User must have a complete profile to receive recommendations.');
+      return;
+    }
+    const text = prompt('Enter your recommendation');
+    if (!text) return;
+    const all = await getUsers();
+    const idx = all.findIndex(u => u.email === email);
+    if (!all[idx].recommendations) all[idx].recommendations = [];
+    all[idx].recommendations.push({
+      from: current.email,
+      text,
+      timestamp: Date.now(),
+    });
+    await saveUsers(all);
+    setUsers(all.filter(x => x.email !== current.email));
+  };
+
   if (!current) return null;
 
   return (
@@ -119,6 +146,15 @@ export default function Community() {
                     <Link to={`/chat/${u.email}`} className="btn btn-sm btn-secondary">
                       Message
                     </Link>
+                    {profileComplete(current) && profileComplete(u) && (
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-success ms-2"
+                        onClick={() => recommend(u.email)}
+                      >
+                        Recommend
+                      </button>
+                    )}
                   </div>
                 </li>
               ))}

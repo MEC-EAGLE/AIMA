@@ -62,6 +62,18 @@ export default function Profile() {
             </ul>
           </div>
         )}
+        {user.recommendations && user.recommendations.length > 0 && (
+          <div className="mt-3">
+            <h5>Recommendations</h5>
+            <ul className="list-group">
+              {user.recommendations.map((r: any, i: number) => (
+                <li key={i} className="list-group-item">
+                  <strong>{r.from}</strong>: {r.text}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -287,6 +287,18 @@ export default function Dashboard() {
                 ))}
               </ul>
             </div>
+            {user.recommendations && user.recommendations.length > 0 && (
+              <div className="mt-4">
+                <h5>Recommendations</h5>
+                <ul className="list-group">
+                  {user.recommendations.map((r: any, i: number) => (
+                    <li key={i} className="list-group-item">
+                      <strong>{r.from}</strong>: {r.text}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         )}
 
@@ -308,8 +320,26 @@ export default function Dashboard() {
             <h4>Other Members</h4>
             <ul className="list-group mb-3">
               {otherMembers.map(m => (
-                <li key={m.email} className="list-group-item">
-                  {m.email}
+                <li key={m.email} className="list-group-item d-flex justify-content-between align-items-center">
+                  <span>{m.email}</span>
+                  {m.skills && m.skills.length > 0 && user.skills && user.skills.length > 0 && m.bio && m.resume && user.bio && user.resume && (
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline-success"
+                      onClick={async () => {
+                        const text = prompt('Enter your recommendation');
+                        if (!text) return;
+                        const all = await getUsers();
+                        const idx = all.findIndex(u => u.email === m.email);
+                        if (!all[idx].recommendations) all[idx].recommendations = [];
+                        all[idx].recommendations.push({ from: user.email, text, timestamp: Date.now() });
+                        await saveUsers(all);
+                        setUsers(all);
+                      }}
+                    >
+                      Recommend
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>

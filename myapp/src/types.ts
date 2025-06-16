@@ -13,6 +13,13 @@ export interface User {
   docs: string[];
   profileRequests: string[];
   profileShares: string[];
+  recommendations?: Recommendation[];
+}
+
+export interface Recommendation {
+  from: string;
+  text: string;
+  timestamp: number;
 }
 
 export interface Comment {

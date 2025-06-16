@@ -31,6 +31,7 @@ export default function Register() {
       docs: [],
       profileRequests: [],
       profileShares: [],
+      recommendations: [],
       resume: '',
       bio: '',
     };
