@@ -24,6 +24,7 @@ export default function Dashboard() {
   const [docName, setDocName] = useState('');
   const [oldPass, setOldPass] = useState('');
   const [newPass, setNewPass] = useState('');
+  const [photo, setPhoto] = useState('');
 
   useEffect(() => {
     const u = localStorage.getItem('currentUser');
@@ -57,6 +58,7 @@ export default function Dashboard() {
       setResumeText(complete.resume || '');
       setBio(complete.bio || '');
       setSkillsInput((complete.skills || []).join(', '));
+      setPhoto(complete.photo || '');
       Promise.all([getPosts(), getUsers(), getGroups()]).then(
         ([p, us, gs]) => {
           setPosts(p);
@@ -407,6 +409,7 @@ export default function Dashboard() {
                   .map(s => s.trim())
                   .filter(s => s);
                 all[idx].docs = user.docs || [];
+                if (photo) all[idx].photo = photo;
                 await saveUsers(all);
                 localStorage.setItem('currentUser', JSON.stringify(all[idx]));
                 setUser(all[idx]);
@@ -419,6 +422,29 @@ export default function Dashboard() {
                   value={skillsInput}
                   onChange={e => setSkillsInput(e.target.value)}
                 />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Profile Photo</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="form-control"
+                  onChange={e => {
+                    const f = e.target.files?.[0];
+                    if (!f) return;
+                    const reader = new FileReader();
+                    reader.onload = () => setPhoto(reader.result as string);
+                    reader.readAsDataURL(f);
+                  }}
+                />
+                {user.photo && (
+                  <img
+                    src={photo || user.photo}
+                    alt="profile"
+                    className="mt-2"
+                    style={{ width: '64px', height: '64px', objectFit: 'cover' }}
+                  />
+                )}
               </div>
               <div className="mb-3">
                 <label className="form-label">Bio</label>

@@ -158,7 +158,16 @@ export default function Community() {
                   key={u.email}
                   className="list-group-item d-flex justify-content-between align-items-center"
                 >
-                  <span>{u.contactName}</span>
+                  <span className="d-flex align-items-center">
+                    {u.photo && (
+                      <img
+                        src={u.photo}
+                        alt="pfp"
+                        style={{ width: '32px', height: '32px', objectFit: 'cover', borderRadius: '50%', marginRight: '6px' }}
+                      />
+                    )}
+                    {u.contactName}
+                  </span>
                   <div>
                     <button
                       type="button"

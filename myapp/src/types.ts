@@ -3,6 +3,7 @@ export interface User {
   password: string;
   phone: string;
   contactName: string;
+  photo?: string;
   type: 'member' | 'org' | 'admin';
   verified: boolean;
   followers: string[];

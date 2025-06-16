@@ -45,8 +45,19 @@ export default function Profile() {
     <div>
       <Nav />
       <div className="container my-4" style={{ maxWidth: '600px' }}>
-        <h2>{user.contactName}'s Profile</h2>
-        <p className="text-muted">Email: {user.email}</p>
+        <div className="d-flex align-items-center mb-2">
+          {user.photo && (
+            <img
+              src={user.photo}
+              alt="profile"
+              style={{ width: '64px', height: '64px', objectFit: 'cover', borderRadius: '50%', marginRight: '10px' }}
+            />
+          )}
+          <div>
+            <h2 className="mb-0">{user.contactName}'s Profile</h2>
+            <p className="text-muted mb-0">Email: {user.email}</p>
+          </div>
+        </div>
         <h5>Skills</h5>
         <p>{(user.skills || []).join(', ') || 'No skills listed'}</p>
         {user.bio && (

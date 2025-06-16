@@ -7,6 +7,7 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
   const [contactName, setContactName] = useState('');
+  const [photo, setPhoto] = useState('');
   const [type, setType] = useState('member');
   const [skills, setSkills] = useState('');
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ export default function Register() {
       password: hashed,
       phone,
       contactName,
+      photo,
       type,
       verified: false,
       followers: [],
@@ -89,6 +91,21 @@ export default function Register() {
             value={contactName}
             onChange={e => setContactName(e.target.value)}
             required
+          />
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Profile Photo</label>
+          <input
+            type="file"
+            accept="image/*"
+            className="form-control"
+            onChange={e => {
+              const f = e.target.files?.[0];
+              if (!f) return;
+              const reader = new FileReader();
+              reader.onload = () => setPhoto(reader.result as string);
+              reader.readAsDataURL(f);
+            }}
           />
         </div>
         <div className="mb-3">

@@ -112,10 +112,25 @@ export default function Chat() {
   };
 
   return (
-    <div className="container my-4" style={{ maxWidth: '500px' }}>
+    <div className="container my-4" style={{ maxWidth: '700px' }}>
       <div className="card">
         <div className="card-body">
-          <h3 className="card-title">Chat with {targetName}</h3>
+          <h3 className="card-title d-flex align-items-center">
+            {email && !email.startsWith('group-') && (
+              <img
+                src={users.find(u => u.email === email)?.photo || ''}
+                alt="pfp"
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  objectFit: 'cover',
+                  borderRadius: '50%',
+                  marginRight: '6px',
+                }}
+              />
+            )}
+            <span>Chat with {targetName}</span>
+          </h3>
           <div
             style={{
               height: '200px',
@@ -125,29 +140,62 @@ export default function Chat() {
             }}
           >
             {msgs.map((m, i) => (
-              <div key={i} className={m.from === current.email ? 'text-end' : 'text-start'}>
-                <small>
-                  {m.from === current.email
-                    ? 'You'
-                    : users.find(u => u.email === m.from)?.contactName || m.from}
-                </small>
-                <p className="mb-1">{m.text}</p>
-                {m.attachments &&
-                  m.attachments.map((a: any, j: number) => (
-                    <div key={j}>
-                      <a href={a.data} download={a.name}>
-                        {a.name}
-                      </a>
-                    </div>
-                  ))}
+              <div
+                key={i}
+                className={`d-flex mb-2 ${
+                  m.from === current.email ? 'justify-content-end' : 'justify-content-start'
+                }`}
+              >
+                {m.from !== current.email && (
+                  <img
+                    src={users.find(u => u.email === m.from)?.photo || ''}
+                    alt="pfp"
+                    style={{
+                      width: '32px',
+                      height: '32px',
+                      objectFit: 'cover',
+                      borderRadius: '50%',
+                      marginRight: '6px',
+                    }}
+                  />
+                )}
+                <div>
+                  <small>
+                    {m.from === current.email
+                      ? 'You'
+                      : users.find(u => u.email === m.from)?.contactName || m.from}
+                  </small>
+                  <p className="mb-1">{m.text}</p>
+                  {m.attachments &&
+                    m.attachments.map((a: any, j: number) => (
+                      <div key={j}>
+                        <a href={a.data} download={a.name}>
+                          {a.name}
+                        </a>
+                      </div>
+                    ))}
+                  {m.from === current.email && (
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-link text-danger p-0"
+                      onClick={() => deleteMessage(m.timestamp)}
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
                 {m.from === current.email && (
-                  <button
-                    type="button"
-                    className="btn btn-sm btn-link text-danger p-0"
-                    onClick={() => deleteMessage(m.timestamp)}
-                  >
-                    Delete
-                  </button>
+                  <img
+                    src={current.photo || ''}
+                    alt="pfp"
+                    style={{
+                      width: '32px',
+                      height: '32px',
+                      objectFit: 'cover',
+                      borderRadius: '50%',
+                      marginLeft: '6px',
+                    }}
+                  />
                 )}
               </div>
             ))}
