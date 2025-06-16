@@ -8,6 +8,7 @@ export default function Profile() {
   const navigate = useNavigate();
   const [viewer, setViewer] = useState(null as any);
   const [user, setUser] = useState(null as any);
+  const [allUsers, setAllUsers] = useState([] as any[]);
 
   useEffect(() => {
     const stored = localStorage.getItem('currentUser');
@@ -15,6 +16,7 @@ export default function Profile() {
     const me = JSON.parse(stored);
     setViewer(me);
     getUsers().then(all => {
+      setAllUsers(all);
       const found = all.find((u: any) => u.email === email);
       if (!found) return navigate('/community');
       setUser(found);
@@ -24,7 +26,9 @@ export default function Profile() {
   if (!viewer || !user) return null;
 
   const allowed =
-    viewer.email === user.email || (user.profileShares || []).includes(viewer.email);
+    viewer.email === user.email ||
+    (user.profileShares || []).includes(viewer.email) ||
+    (viewer.type === 'org' && user.type === 'member');
 
   if (!allowed) {
     return (
@@ -69,7 +73,10 @@ export default function Profile() {
             <ul className="list-group">
               {user.recommendations.map((r: any, i: number) => (
                 <li key={i} className="list-group-item">
-                  <strong>{r.from}</strong>: {r.text}
+                  <strong>
+                    {allUsers.find(u => u.email === r.from)?.contactName || r.from}
+                  </strong>
+                  : {r.text}
                 </li>
               ))}
             </ul>

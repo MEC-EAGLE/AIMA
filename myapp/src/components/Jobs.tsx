@@ -147,7 +147,11 @@ export default function Jobs() {
                 <h6>Applicants</h6>
                 <ul className="list-group mb-2">
                   {p.applicants.map(a => (
-                    <li key={a} className="list-group-item">
+                    <li
+                      key={a}
+                      className="list-group-item"
+                      style={{ opacity: p.statuses[a] === 'rejected' ? 0.5 : 1 }}
+                    >
                       {(() => {
                         const cand = users.find(u => u.email === a);
                         if (!cand) return null;
@@ -177,6 +181,13 @@ export default function Jobs() {
                         <option value="offer">offer</option>
                         <option value="rejected">rejected</option>
                       </select>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-danger mt-1 ms-2"
+                        onClick={() => updateStatus(p.id, a, 'rejected')}
+                      >
+                        Reject
+                      </button>
                       <Link
                         to="/interview"
                         className="btn btn-sm btn-outline-primary mt-1 ms-2"

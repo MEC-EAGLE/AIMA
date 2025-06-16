@@ -135,6 +135,7 @@ export default function Create() {
                   <li
                     key={a}
                     className="list-group-item d-flex justify-content-between align-items-center"
+                    style={{ opacity: p.statuses[a] === 'rejected' ? 0.5 : 1 }}
                   >
                     <span>{cand.contactName}</span>
                     <span>
@@ -156,6 +157,13 @@ export default function Create() {
                         <option value="offer">offer</option>
                         <option value="rejected">rejected</option>
                       </select>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-danger me-2"
+                        onClick={() => updateStatus(p.id, a, 'rejected')}
+                      >
+                        Reject
+                      </button>
                       <Link
                         to="/interview"
                         className="btn btn-sm btn-outline-primary"

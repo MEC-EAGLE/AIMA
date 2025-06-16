@@ -248,7 +248,11 @@ export default function Dashboard() {
                       <ul className="list-group mb-2">
                         {p.comments.map((c: any, i: number) => (
                           <li key={i} className="list-group-item">
-                            <small>{c.userEmail}</small>: {c.text}
+                            <small>
+                              {users.find(u => u.email === c.userEmail)?.contactName ||
+                                c.userEmail}
+                            </small>
+                            : {c.text}
                           </li>
                         ))}
                       </ul>

@@ -17,6 +17,7 @@ export default function Chat() {
   const [canChat, setCanChat] = useState(true);
   const [files, setFiles] = useState([] as { name: string; data: string }[]);
   const [group, setGroup] = useState<any>(null);
+  const [users, setUsers] = useState([] as any[]);
 
   useEffect(() => {
     getMessages().then(all =>
@@ -34,12 +35,16 @@ export default function Chat() {
     );
     if (!email) return;
     getUsers().then(us => {
+      setUsers(us);
       const me = us.find(u => u.email === current.email);
       const other = us.find(u => u.email === email);
       const blocked =
         other?.blocked?.includes(current.email) || me?.blocked?.includes(email);
       const snoozed = me?.snoozed || other?.snoozed;
       setCanChat(!blocked && !snoozed);
+      if (other) {
+        setTargetName(other.contactName);
+      }
     });
     if (email?.startsWith('group-')) {
       const id = parseInt(email.slice(6), 10);
@@ -121,7 +126,11 @@ export default function Chat() {
           >
             {msgs.map((m, i) => (
               <div key={i} className={m.from === current.email ? 'text-end' : 'text-start'}>
-                <small>{m.from === current.email ? 'You' : m.from}</small>
+                <small>
+                  {m.from === current.email
+                    ? 'You'
+                    : users.find(u => u.email === m.from)?.contactName || m.from}
+                </small>
                 <p className="mb-1">{m.text}</p>
                 {m.attachments &&
                   m.attachments.map((a: any, j: number) => (
