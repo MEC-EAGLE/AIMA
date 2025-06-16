@@ -189,11 +189,17 @@ export default function Jobs() {
                         Reject
                       </button>
                       <Link
+                        to={`/chat/${a}`}
+                        className="btn btn-sm btn-secondary mt-1 ms-2"
+                      >
+                        Message
+                      </Link>
+                      <Link
                         to="/interview"
                         className="btn btn-sm btn-outline-primary mt-1 ms-2"
-                  >
-                    Start Interview
-                  </Link>
+                      >
+                        Start Interview
+                      </Link>
                     </li>
                   ))}
                 </ul>

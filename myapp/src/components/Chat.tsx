@@ -41,7 +41,12 @@ export default function Chat() {
       const blocked =
         other?.blocked?.includes(current.email) || me?.blocked?.includes(email);
       const snoozed = me?.snoozed || other?.snoozed;
-      setCanChat(!blocked && !snoozed);
+      if (email?.startsWith('group-')) {
+        // membership handled below
+        setCanChat(!blocked && !snoozed);
+      } else {
+        setCanChat(!blocked && !snoozed);
+      }
       if (other) {
         setTargetName(other.contactName);
       }
@@ -52,6 +57,10 @@ export default function Chat() {
         const g = gs.find(x => x.id === id);
         setGroup(g);
         setTargetName(g ? g.name : email);
+        if (g) {
+          const member = g.members.includes(current.email);
+          setCanChat(prev => member && prev);
+        }
       });
     } else {
       setTargetName(email || '');
@@ -104,10 +113,30 @@ export default function Chat() {
     const all = await getGroups();
     const idx = all.findIndex(g => g.id === group.id);
     if (idx === -1) return;
-    if (!all[idx].members.includes(memberEmail)) {
-      all[idx].members.push(memberEmail);
+    if (!all[idx].invites) all[idx].invites = [];
+    if (
+      !all[idx].members.includes(memberEmail) &&
+      !all[idx].invites.includes(memberEmail)
+    ) {
+      all[idx].invites.push(memberEmail);
       await saveGroups(all);
       setGroup(all[idx]);
+    }
+  };
+
+  const acceptInvite = async () => {
+    if (!group) return;
+    const all = await getGroups();
+    const idx = all.findIndex(g => g.id === group.id);
+    if (idx === -1) return;
+    if (!all[idx].members.includes(current.email)) {
+      all[idx].members.push(current.email);
+      all[idx].invites = (all[idx].invites || []).filter(
+        (e: string) => e !== current.email
+      );
+      await saveGroups(all);
+      setGroup(all[idx]);
+      setCanChat(true);
     }
   };
 
@@ -246,13 +275,26 @@ export default function Chat() {
               Send
             </button>
           </div>
+          {email?.startsWith('group-') &&
+            group &&
+            !group.members.includes(current.email) &&
+            group.invites &&
+            group.invites.includes(current.email) && (
+              <button
+                type="button"
+                className="btn btn-sm btn-primary mt-2"
+                onClick={acceptInvite}
+              >
+                Accept Invite
+              </button>
+            )}
           {email?.startsWith('group-') && group && group.members.includes(current.email) && (
             <button type="button" className="btn btn-sm btn-outline-secondary mt-2" onClick={inviteToGroup}>
               Invite Member
             </button>
           )}
           {!canChat && (
-            <div className="text-danger mt-2">Messaging is unavailable (blocked or snoozed)</div>
+            <div className="text-danger mt-2">Messaging is unavailable</div>
           )}
         </div>
       </div>

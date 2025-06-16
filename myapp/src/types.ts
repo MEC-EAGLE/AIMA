@@ -52,6 +52,7 @@ export interface Group {
   id: number;
   name: string;
   members: string[];
+  invites?: string[];
 }
 
 export interface Attachment {

@@ -37,11 +37,15 @@ export default function Community() {
   const toggleJoinGroup = async (id: number) => {
     const all = await getGroups();
     const idx = all.findIndex(g => g.id === id);
+    if (idx === -1) return;
     const members = new Set(all[idx].members);
     if (members.has(current.email)) {
       members.delete(current.email);
-    } else {
+    } else if (all[idx].invites && all[idx].invites.includes(current.email)) {
       members.add(current.email);
+      all[idx].invites = all[idx].invites.filter((e: string) => e !== current.email);
+    } else {
+      return;
     }
     all[idx].members = Array.from(members);
     await saveGroups(all);
@@ -53,7 +57,7 @@ export default function Community() {
     if (!name) return;
     const all = await getGroups();
     const id = Date.now();
-    all.push({ id, name, members: [current.email] });
+    all.push({ id, name, members: [current.email], invites: [] });
     await saveGroups(all);
     setGroups(all);
     setNewGroupName('');
@@ -71,8 +75,9 @@ export default function Community() {
     const all = await getGroups();
     const idx = all.findIndex(g => g.id === id);
     if (idx === -1) return;
-    if (!all[idx].members.includes(email)) {
-      all[idx].members.push(email);
+    if (!all[idx].invites) all[idx].invites = [];
+    if (!all[idx].members.includes(email) && !all[idx].invites.includes(email)) {
+      all[idx].invites.push(email);
       await saveGroups(all);
       setGroups(all);
     }
@@ -238,27 +243,32 @@ export default function Community() {
                   >
                     <span>{g.name}</span>
                     <div>
-                      <button
-                        type="button"
-                        className="btn btn-sm btn-outline-primary me-2"
-                        onClick={() => toggleJoinGroup(g.id)}
-                      >
-                        {g.members.includes(current.email) ? 'Leave' : 'Join'}
-                      </button>
-                      <Link
-                        to={`/chat/group-${g.id}`}
-                        className="btn btn-sm btn-secondary me-2"
-                      >
-                        Message
-                      </Link>
-                      {g.members.includes(current.email) && (
+                      {g.members.includes(current.email) ||
+                      (g.invites && g.invites.includes(current.email)) ? (
                         <button
                           type="button"
-                          className="btn btn-sm btn-outline-secondary"
-                          onClick={() => inviteToGroup(g.id)}
+                          className="btn btn-sm btn-outline-primary me-2"
+                          onClick={() => toggleJoinGroup(g.id)}
                         >
-                          Invite
+                          {g.members.includes(current.email) ? 'Leave' : 'Accept'}
                         </button>
+                      ) : null}
+                      {g.members.includes(current.email) && (
+                        <>
+                          <Link
+                            to={`/chat/group-${g.id}`}
+                            className="btn btn-sm btn-secondary me-2"
+                          >
+                            Message
+                          </Link>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-outline-secondary"
+                            onClick={() => inviteToGroup(g.id)}
+                          >
+                            Invite
+                          </button>
+                        </>
                       )}
                     </div>
                   </li>
