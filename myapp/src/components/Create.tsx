@@ -1,6 +1,6 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { getPosts, savePosts } from '../utils';
+import { getPosts, savePosts, getUsers, saveUsers } from '../utils';
 
 export default function Create() {
   const navigate = useNavigate();
@@ -8,20 +8,30 @@ export default function Create() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [postType, setPostType] = useState('job');
+  const [posts, setPosts] = useState([] as any[]);
+  const [users, setUsers] = useState([] as any[]);
 
   useEffect(() => {
     const u = localStorage.getItem('currentUser');
     if (!u) return navigate('/login');
     const parsed = JSON.parse(u);
+    if (parsed.type !== 'org') {
+      navigate('/dashboard');
+      return;
+    }
     setUser(parsed);
+    Promise.all([getPosts(), getUsers()]).then(([p, us]) => {
+      setPosts(p.filter(x => x.authorEmail === parsed.email));
+      setUsers(us);
+    });
   }, [navigate]);
 
   if (!user) return null;
 
   const submit = async (e: any) => {
     e.preventDefault();
-    const posts = await getPosts();
-    posts.push({
+    const all = await getPosts();
+    all.push({
       id: Date.now(),
       authorEmail: user.email,
       authorType: user.type,
@@ -33,38 +43,133 @@ export default function Create() {
       statuses: {},
       comments: [],
     });
-    await savePosts(posts);
-    alert('Created!');
-    navigate('/dashboard');
+    await savePosts(all);
+    setPosts(all.filter(p => p.authorEmail === user.email));
+    setTitle('');
+    setDescription('');
+  };
+
+  const deletePost = async (id: number) => {
+    if (!window.confirm('Delete this post?')) return;
+    const all = await getPosts();
+    const filtered = all.filter(p => p.id !== id);
+    await savePosts(filtered);
+    setPosts(filtered.filter(p => p.authorEmail === user.email));
+  };
+
+  const requestProfile = async (email: string) => {
+    const all = await getUsers();
+    const idx = all.findIndex(u => u.email === email);
+    if (!all[idx].profileRequests) all[idx].profileRequests = [];
+    if (!all[idx].profileRequests.includes(user.email)) {
+      all[idx].profileRequests.push(user.email);
+      await saveUsers(all);
+      setUsers(all);
+    }
   };
 
   return (
     <div className="container my-4" style={{ maxWidth: '600px' }}>
-      <div className="card">
+      <div className="card mb-3">
         <div className="card-body">
           <h2 className="card-title mb-3">Create Post</h2>
           <form onSubmit={submit}>
             <div className="mb-3">
               <label className="form-label">Title</label>
-              <input className="form-control" value={title} onChange={e => setTitle(e.target.value)} required />
+              <input
+                className="form-control"
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+                required
+              />
             </div>
-        <div className="mb-3">
-          <label className="form-label">Description</label>
-          <textarea className="form-control" value={description} onChange={e => setDescription(e.target.value)} required />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Type</label>
-          <select className="form-select" value={postType} onChange={e => setPostType(e.target.value)}>
-            <option value="job">Job</option>
-            <option value="internship">Internship</option>
-            <option value="volunteering">Volunteering</option>
-            <option value="project">Project</option>
-          </select>
-        </div>
-            <button className="btn btn-primary" type="submit">Create</button>
+            <div className="mb-3">
+              <label className="form-label">Description</label>
+              <textarea
+                className="form-control"
+                value={description}
+                onChange={e => setDescription(e.target.value)}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Type</label>
+              <select
+                className="form-select"
+                value={postType}
+                onChange={e => setPostType(e.target.value)}
+              >
+                <option value="job">Job</option>
+                <option value="internship">Internship</option>
+                <option value="volunteering">Volunteering</option>
+                <option value="project">Project</option>
+              </select>
+            </div>
+            <button className="btn btn-primary" type="submit">
+              Create
+            </button>
           </form>
         </div>
       </div>
+      {posts.map(p => (
+        <div key={p.id} className="card mb-3">
+          <div className="card-body">
+            <h5 className="card-title">{p.title}</h5>
+            <p>{p.description}</p>
+            <button
+              type="button"
+              className="btn btn-sm btn-danger mb-3"
+              onClick={() => deletePost(p.id)}
+            >
+              Delete Post
+            </button>
+            <h6>
+              Applicants ({p.applicants.length})
+            </h6>
+            <ul className="list-group">
+              {p.applicants.map(a => {
+                const cand = users.find(u => u.email === a);
+                if (!cand) return null;
+                return (
+                  <li
+                    key={a}
+                    className="list-group-item d-flex justify-content-between align-items-center"
+                  >
+                    <span>{a}</span>
+                    <span>
+                      {cand.profileShares && cand.profileShares.includes(user.email) ? (
+                        <Link
+                          to={`/profile/${a}`}
+                          className="btn btn-sm btn-outline-info me-2"
+                        >
+                          View Profile
+                        </Link>
+                      ) : (
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-outline-info me-2"
+                          onClick={() => requestProfile(a)}
+                          disabled={cand.profileRequests && cand.profileRequests.includes(user.email)}
+                        >
+                          {cand.profileRequests && cand.profileRequests.includes(user.email)
+                            ? 'Requested'
+                            : 'Request Profile'}
+                        </button>
+                      )}
+                      <Link
+                        to="/interview"
+                        className="btn btn-sm btn-outline-primary"
+                      >
+                        Interview
+                      </Link>
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

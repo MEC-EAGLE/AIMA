@@ -79,6 +79,13 @@ export default function Chat() {
     setFiles([]);
   };
 
+  const deleteMessage = async (timestamp: number) => {
+    const all = await getMessages();
+    const filtered = all.filter(m => m.timestamp !== timestamp);
+    await saveMessages(filtered);
+    setMsgs(msgs.filter(m => m.timestamp !== timestamp));
+  };
+
   const inviteToGroup = async () => {
     if (!email?.startsWith('group-') || !group) return;
     const memberEmail = prompt('Enter member email to invite');
@@ -115,14 +122,24 @@ export default function Chat() {
             {msgs.map((m, i) => (
               <div key={i} className={m.from === current.email ? 'text-end' : 'text-start'}>
                 <small>{m.from === current.email ? 'You' : m.from}</small>
-                <p>{m.text}</p>
-                {m.attachments && m.attachments.map((a: any, j: number) => (
-                  <div key={j}>
-                    <a href={a.data} download={a.name}>
-                      {a.name}
-                    </a>
-                  </div>
-                ))}
+                <p className="mb-1">{m.text}</p>
+                {m.attachments &&
+                  m.attachments.map((a: any, j: number) => (
+                    <div key={j}>
+                      <a href={a.data} download={a.name}>
+                        {a.name}
+                      </a>
+                    </div>
+                  ))}
+                {m.from === current.email && (
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-link text-danger p-0"
+                    onClick={() => deleteMessage(m.timestamp)}
+                  >
+                    Delete
+                  </button>
+                )}
               </div>
             ))}
           </div>
