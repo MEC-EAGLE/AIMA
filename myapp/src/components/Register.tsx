@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { getUsers, saveUsers } from '../utils';
+import { getUsers, saveUsers, hashString } from '../utils';
 
 export default function Register() {
   const [email, setEmail] = useState('');
@@ -19,9 +19,10 @@ export default function Register() {
       return;
     }
     const users = await getUsers();
+    const hashed = await hashString(password);
     const newUser: any = {
       email,
-      password,
+      password: hashed,
       phone,
       contactName,
       type,
@@ -36,6 +37,9 @@ export default function Register() {
       bio: '',
       events: [],
       notes: [],
+      snoozed: false,
+      blocked: [],
+      resetCode: '',
     };
     if (type === 'member' || type === 'candidate') {
       newUser.skills = skills

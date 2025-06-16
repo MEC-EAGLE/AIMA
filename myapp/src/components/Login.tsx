@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { getUsers } from '../utils';
+import { getUsers, hashString } from '../utils';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -10,7 +10,8 @@ export default function Login() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const users = await getUsers();
-    const found = users.find((u: any) => u.email === email && u.password === password);
+    const hashed = await hashString(password);
+    const found = users.find((u: any) => u.email === email && u.password === hashed);
     if (found) {
       if (!found.verified) {
         alert('Please verify your account first.');
@@ -49,6 +50,9 @@ export default function Login() {
                 onChange={e => setPassword(e.target.value)}
                 required
               />
+              <div className="form-text">
+                <Link to="/forgot">Forgot password?</Link>
+              </div>
             </div>
             <button type="submit" className="btn btn-primary">
               Login

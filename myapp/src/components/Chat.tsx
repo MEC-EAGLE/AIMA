@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { getMessages, saveMessages, getGroups } from '../utils';
+import { getMessages, saveMessages, getGroups, getUsers } from '../utils';
 
 export default function Chat() {
   const { email } = useParams();
@@ -8,6 +8,7 @@ export default function Chat() {
   const [text, setText] = useState('');
   const [msgs, setMsgs] = useState([] as any[]);
   const [targetName, setTargetName] = useState(email || '');
+  const [canChat, setCanChat] = useState(true);
 
   useEffect(() => {
     getMessages().then(all =>
@@ -23,6 +24,15 @@ export default function Chat() {
         })
       )
     );
+    if (!email) return;
+    getUsers().then(us => {
+      const me = us.find(u => u.email === current.email);
+      const other = us.find(u => u.email === email);
+      const blocked =
+        other?.blocked?.includes(current.email) || me?.blocked?.includes(email);
+      const snoozed = me?.snoozed || other?.snoozed;
+      setCanChat(!blocked && !snoozed);
+    });
     if (email?.startsWith('group-')) {
       const id = parseInt(email.slice(6), 10);
       getGroups().then(gs => {
@@ -35,7 +45,7 @@ export default function Chat() {
   }, [email]);
 
   const send = async () => {
-    if (!text) return;
+    if (!text || !canChat) return;
     const all = await getMessages();
     all.push({ from: current.email, to: email!, text, timestamp: Date.now() });
     await saveMessages(all);
@@ -78,11 +88,15 @@ export default function Chat() {
               className="form-control"
               value={text}
               onChange={e => setText(e.target.value)}
+              disabled={!canChat}
             />
-            <button type="button" className="btn btn-primary" onClick={send}>
+            <button type="button" className="btn btn-primary" onClick={send} disabled={!canChat}>
               Send
             </button>
           </div>
+          {!canChat && (
+            <div className="text-danger mt-2">Messaging is unavailable (blocked or snoozed)</div>
+          )}
         </div>
       </div>
     </div>

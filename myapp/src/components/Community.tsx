@@ -58,6 +58,18 @@ export default function Community() {
     }
   };
 
+  const toggleBlock = async (email: string) => {
+    const all = await getUsers();
+    const idx = all.findIndex(u => u.email === current.email);
+    const set = new Set(all[idx].blocked || []);
+    if (set.has(email)) set.delete(email); else set.add(email);
+    all[idx].blocked = Array.from(set);
+    await saveUsers(all);
+    localStorage.setItem('currentUser', JSON.stringify(all[idx]));
+    setCurrent(all[idx]);
+    setUsers(all.filter(x => x.email !== all[idx].email));
+  };
+
   const profileComplete = (u: any) =>
     u.skills && u.skills.length > 0 && u.bio && u.resume;
 
@@ -146,6 +158,15 @@ export default function Community() {
                     <Link to={`/chat/${u.email}`} className="btn btn-sm btn-secondary">
                       Message
                     </Link>
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline-danger ms-2"
+                      onClick={() => toggleBlock(u.email)}
+                    >
+                      {current.blocked && current.blocked.includes(u.email)
+                        ? 'Unblock'
+                        : 'Block'}
+                    </button>
                     {profileComplete(current) && profileComplete(u) && (
                       <button
                         type="button"

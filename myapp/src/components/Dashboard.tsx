@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Nav from './Nav';
-import { getPosts, savePosts, getUsers, getGroups, saveUsers } from '../utils';
+import {
+  getPosts,
+  savePosts,
+  getUsers,
+  getGroups,
+  saveUsers,
+  hashString,
+} from '../utils';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -65,6 +72,8 @@ export default function Dashboard() {
   const [bio, setBio] = useState('');
   const [skillsInput, setSkillsInput] = useState('');
   const [docName, setDocName] = useState('');
+  const [oldPass, setOldPass] = useState('');
+  const [newPass, setNewPass] = useState('');
 
   return (
     <div>
@@ -147,13 +156,96 @@ export default function Dashboard() {
         )}
 
         {active === 'settings' && (
-          <div>
+          <div style={{ maxWidth: '500px' }}>
             <h4>Member Settings</h4>
             <p>
               Email: {user.email}
               <br />
               Phone: {user.phone}
             </p>
+            <form
+              className="mb-3"
+              onSubmit={async e => {
+                e.preventDefault();
+                const all = await getUsers();
+                const idx = all.findIndex(u => u.email === user.email);
+                const hashedOld = await hashString(oldPass);
+                if (all[idx].password !== hashedOld) {
+                  alert('Current password incorrect');
+                  return;
+                }
+                all[idx].password = await hashString(newPass);
+                await saveUsers(all);
+                localStorage.setItem('currentUser', JSON.stringify(all[idx]));
+                setUser(all[idx]);
+                setOldPass('');
+                setNewPass('');
+                alert('Password updated');
+              }}
+            >
+              <div className="mb-2">
+                <label className="form-label">Current Password</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  value={oldPass}
+                  onChange={e => setOldPass(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="mb-2">
+                <label className="form-label">New Password</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  value={newPass}
+                  onChange={e => setNewPass(e.target.value)}
+                  required
+                />
+              </div>
+              <button type="submit" className="btn btn-primary btn-sm">
+                Update Password
+              </button>
+            </form>
+            <div className="form-check form-switch mb-3">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                id="snoozeToggle"
+                checked={user.snoozed}
+                onChange={async () => {
+                  const all = await getUsers();
+                  const idx = all.findIndex(u => u.email === user.email);
+                  all[idx].snoozed = !all[idx].snoozed;
+                  await saveUsers(all);
+                  localStorage.setItem('currentUser', JSON.stringify(all[idx]));
+                  setUser(all[idx]);
+                }}
+              />
+              <label className="form-check-label" htmlFor="snoozeToggle">
+                Snooze account
+              </label>
+            </div>
+            <button
+              type="button"
+              className="btn btn-danger btn-sm"
+              onClick={async () => {
+                if (!window.confirm('Delete your account?')) return;
+                const all = await getUsers();
+                const remaining = all.filter(u => u.email !== user.email);
+                await saveUsers(remaining);
+                const p = await getPosts();
+                p.forEach(post => {
+                  post.applicants = post.applicants.filter(a => a !== user.email);
+                  delete post.statuses[user.email];
+                });
+                await savePosts(p);
+                localStorage.removeItem('currentUser');
+                navigate('/');
+              }}
+            >
+              Delete Account
+            </button>
           </div>
         )}
 

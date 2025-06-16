@@ -19,6 +19,7 @@ import Calendar from './components/Calendar';
 import Notes from './components/Notes';
 import PeopleMap from './components/PeopleMap';
 import Interview from './components/Interview';
+import Forgot from './components/Forgot';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot" element={<Forgot />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/create" element={<Create />} />
         <Route path="/community" element={<Community />} />

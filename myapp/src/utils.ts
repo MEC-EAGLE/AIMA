@@ -1,5 +1,13 @@
 import { User, Post, Group, Message } from './types';
 
+export async function hashString(str: string): Promise<string> {
+  const buf = new TextEncoder().encode(str);
+  const hash = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(hash))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
 const API = 'http://localhost:3001';
 
 async function fetchJSON(key: string): Promise<any> {

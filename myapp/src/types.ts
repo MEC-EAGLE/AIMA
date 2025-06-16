@@ -17,6 +17,9 @@ export interface User {
   events: CalendarEvent[];
   notes: Note[];
   peopleMap?: PeopleNeed[];
+  snoozed?: boolean;
+  blocked?: string[];
+  resetCode?: string;
 }
 
 export interface Recommendation {
