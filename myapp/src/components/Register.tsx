@@ -29,7 +29,7 @@ export default function Register() {
       followers: [],
       groups: [],
     };
-    if (type === 'member') {
+    if (type === 'member' || type === 'candidate') {
       newUser.skills = skills
         .split(',')
         .map((s: string) => s.trim())
@@ -88,8 +88,13 @@ export default function Register() {
         </div>
         <div className="mb-3">
           <label className="form-label">User Type</label>
-          <select className="form-select" value={type} onChange={e => setType(e.target.value)}>
+          <select
+            className="form-select"
+            value={type}
+            onChange={e => setType(e.target.value)}
+          >
             <option value="member">Community Member</option>
+            <option value="candidate">Candidate</option>
             <option value="org">Organization</option>
           </select>
         </div>

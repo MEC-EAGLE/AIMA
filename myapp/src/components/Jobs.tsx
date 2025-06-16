@@ -56,6 +56,10 @@ export default function Jobs() {
   });
 
   const apply = async (id: number) => {
+    if (user.type === 'candidate' && (!user.skills || user.skills.length === 0)) {
+      alert('Please complete your profile before applying.');
+      return;
+    }
     const all = await getPosts();
     const idx = all.findIndex(x => x.id === id);
     if (!all[idx].applicants.includes(user.email)) {
@@ -102,7 +106,7 @@ export default function Jobs() {
     const mine = posts.filter(p => p.authorEmail === user.email);
     const candidates = users.filter(
       u =>
-        u.type === 'member' &&
+        (u.type === 'member' || u.type === 'candidate') &&
         candidateQuery &&
         u.skills &&
         u.skills.some((s: string) =>
@@ -239,7 +243,7 @@ export default function Jobs() {
                   >
                     Hide
                   </button>
-                  {user.type === 'member' && (
+                  {(user.type === 'member' || user.type === 'candidate') && (
                     p.applicants.includes(user.email) ? (
                       <button
                         type="button"
@@ -259,6 +263,14 @@ export default function Jobs() {
                           e.stopPropagation();
                           apply(p.id);
                         }}
+                        disabled={
+                          user.type === 'candidate' && (!user.skills || user.skills.length === 0)
+                        }
+                        title={
+                          user.type === 'candidate' && (!user.skills || user.skills.length === 0)
+                            ? 'Complete your profile to apply'
+                            : undefined
+                        }
                       >
                         Apply
                       </button>
