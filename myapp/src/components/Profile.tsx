@@ -41,7 +41,8 @@ export default function Profile() {
     <div>
       <Nav />
       <div className="container my-4" style={{ maxWidth: '600px' }}>
-        <h2>{user.email} Profile</h2>
+        <h2>{user.contactName}'s Profile</h2>
+        <p className="text-muted">Email: {user.email}</p>
         <h5>Skills</h5>
         <p>{(user.skills || []).join(', ') || 'No skills listed'}</p>
         {user.bio && (

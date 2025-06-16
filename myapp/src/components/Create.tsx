@@ -1,6 +1,6 @@
 import { useNavigate, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { getPosts, savePosts, getUsers, saveUsers } from '../utils';
+import { getPosts, savePosts, getUsers } from '../utils';
 
 export default function Create() {
   const navigate = useNavigate();
@@ -57,15 +57,16 @@ export default function Create() {
     setPosts(filtered.filter(p => p.authorEmail === user.email));
   };
 
-  const requestProfile = async (email: string) => {
-    const all = await getUsers();
-    const idx = all.findIndex(u => u.email === email);
-    if (!all[idx].profileRequests) all[idx].profileRequests = [];
-    if (!all[idx].profileRequests.includes(user.email)) {
-      all[idx].profileRequests.push(user.email);
-      await saveUsers(all);
-      setUsers(all);
-    }
+  const updateStatus = async (
+    postId: number,
+    email: string,
+    status: string
+  ) => {
+    const all = await getPosts();
+    const idx = all.findIndex(p => p.id === postId);
+    all[idx].statuses[email] = status;
+    await savePosts(all);
+    setPosts(all.filter(p => p.authorEmail === user.email));
   };
 
   return (
@@ -135,27 +136,26 @@ export default function Create() {
                     key={a}
                     className="list-group-item d-flex justify-content-between align-items-center"
                   >
-                    <span>{a}</span>
+                    <span>{cand.contactName}</span>
                     <span>
-                      {cand.profileShares && cand.profileShares.includes(user.email) ? (
-                        <Link
-                          to={`/profile/${a}`}
-                          className="btn btn-sm btn-outline-info me-2"
-                        >
-                          View Profile
-                        </Link>
-                      ) : (
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-outline-info me-2"
-                          onClick={() => requestProfile(a)}
-                          disabled={cand.profileRequests && cand.profileRequests.includes(user.email)}
-                        >
-                          {cand.profileRequests && cand.profileRequests.includes(user.email)
-                            ? 'Requested'
-                            : 'Request Profile'}
-                        </button>
-                      )}
+                      <Link
+                        to={`/profile/${a}`}
+                        className="btn btn-sm btn-outline-info me-2"
+                      >
+                        View Profile
+                      </Link>
+                      <select
+                        className="form-select form-select-sm d-inline-block me-2"
+                        style={{ width: 'auto' }}
+                        value={p.statuses[a] || 'applied'}
+                        onChange={e => updateStatus(p.id, a, e.target.value)}
+                      >
+                        <option value="applied">applied</option>
+                        <option value="review">review</option>
+                        <option value="interview">interview</option>
+                        <option value="offer">offer</option>
+                        <option value="rejected">rejected</option>
+                      </select>
                       <Link
                         to="/interview"
                         className="btn btn-sm btn-outline-primary"

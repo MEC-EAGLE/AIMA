@@ -189,7 +189,9 @@ export default function Dashboard() {
               <ul className="list-group list-group-flush">
                 {posts.map(p => (
                   <li key={p.id} className="list-group-item">
-                    <strong>{p.title}</strong> ({p.postType}) by {p.authorEmail}
+                    <strong>{p.title}</strong> ({p.postType}) by{' '}
+                    {(users.find(u => u.email === p.authorEmail)?.contactName ||
+                      p.authorEmail)}
                     <p>{p.description}</p>
                     {user.type === 'member' && (
                       p.applicants.includes(user.email) ? (
@@ -550,7 +552,7 @@ export default function Dashboard() {
             <ul className="list-group mb-3">
               {otherMembers.map(m => (
                 <li key={m.email} className="list-group-item d-flex justify-content-between align-items-center">
-                  <span>{m.email}</span>
+                  <span>{m.contactName}</span>
                   {m.skills && m.skills.length > 0 && user.skills && user.skills.length > 0 && m.bio && m.resume && user.bio && user.resume && (
                     <button
                       type="button"
@@ -594,7 +596,7 @@ export default function Dashboard() {
             <ul className="list-group mb-3">
               {orgsOffering.map(o => (
                 <li key={o.email} className="list-group-item">
-                  {o.email}
+                  {o.contactName}
                 </li>
               ))}
             </ul>
@@ -607,7 +609,7 @@ export default function Dashboard() {
             <ul className="list-group mb-3">
               {otherOrgs.map(o => (
                 <li key={o.email} className="list-group-item">
-                  {o.email}
+                  {o.contactName}
                 </li>
               ))}
             </ul>

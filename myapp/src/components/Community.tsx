@@ -158,7 +158,7 @@ export default function Community() {
                   key={u.email}
                   className="list-group-item d-flex justify-content-between align-items-center"
                 >
-                  <span>{u.email}</span>
+                  <span>{u.contactName}</span>
                   <div>
                     <button
                       type="button"
@@ -167,7 +167,14 @@ export default function Community() {
                     >
                       {current.followers.includes(u.email) ? 'Unfollow' : 'Follow'}
                     </button>
-                    {u.profileShares && u.profileShares.includes(current.email) ? (
+                    {current.type === 'org' && u.type === 'member' ? (
+                      <Link
+                        to={`/profile/${u.email}`}
+                        className="btn btn-sm btn-outline-info me-2"
+                      >
+                        View Profile
+                      </Link>
+                    ) : u.profileShares && u.profileShares.includes(current.email) ? (
                       <Link
                         to={`/profile/${u.email}`}
                         className="btn btn-sm btn-outline-info me-2"

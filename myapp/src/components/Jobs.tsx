@@ -148,32 +148,25 @@ export default function Jobs() {
                 <ul className="list-group mb-2">
                   {p.applicants.map(a => (
                     <li key={a} className="list-group-item">
-                  {(users.find(u => u.email === a)?.skills || []).join(', ') ||
-                        'No skills'}
-                  {(() => {
-                    const cand = users.find(u => u.email === a);
-                    if (!cand) return null;
-                    return cand.profileShares && cand.profileShares.includes(user.email) ? (
-                      <Link
-                        to={`/profile/${cand.email}`}
-                        className="btn btn-sm btn-outline-info ms-2"
-                      >
-                        View Profile
-                      </Link>
-                    ) : (
-                      <button
-                        type="button"
-                        className="btn btn-sm btn-outline-info ms-2"
-                        onClick={() => requestProfile(cand.email)}
-                        disabled={cand.profileRequests && cand.profileRequests.includes(user.email)}
-                      >
-                        {cand.profileRequests && cand.profileRequests.includes(user.email)
-                          ? 'Requested'
-                          : 'Request Profile'}
-                      </button>
-                    );
-                  })()}
-                  <select
+                      {(() => {
+                        const cand = users.find(u => u.email === a);
+                        if (!cand) return null;
+                        return (
+                          <>
+                            <strong>{cand.contactName}</strong>{' '}
+                            <span className="text-muted">
+                              {(cand.skills || []).join(', ') || 'No skills'}
+                            </span>
+                            <Link
+                              to={`/profile/${cand.email}`}
+                              className="btn btn-sm btn-outline-info ms-2"
+                            >
+                              View Profile
+                            </Link>
+                          </>
+                        );
+                      })()}
+                      <select
                         className="form-select form-select-sm mt-1"
                         value={p.statuses[a] || 'applied'}
                         onChange={e => updateStatus(p.id, a, e.target.value)}
@@ -182,10 +175,11 @@ export default function Jobs() {
                         <option value="review">review</option>
                         <option value="interview">interview</option>
                         <option value="offer">offer</option>
+                        <option value="rejected">rejected</option>
                       </select>
-                  <Link
-                    to="/interview"
-                    className="btn btn-sm btn-outline-primary mt-1 ms-2"
+                      <Link
+                        to="/interview"
+                        className="btn btn-sm btn-outline-primary mt-1 ms-2"
                   >
                     Start Interview
                   </Link>
@@ -207,9 +201,16 @@ export default function Jobs() {
               {matchedMembers.map(c => (
                 <li key={c.email} className="list-group-item d-flex justify-content-between align-items-center">
                   <span>
-                    {c.email} - {(c.skills || []).join(', ')}
+                    {c.contactName} - {(c.skills || []).join(', ')}
                   </span>
-                  {c.profileShares && c.profileShares.includes(user.email) ? (
+                  {user.type === 'org' ? (
+                    <Link
+                      to={`/profile/${c.email}`}
+                      className="btn btn-sm btn-outline-info"
+                    >
+                      View Profile
+                    </Link>
+                  ) : c.profileShares && c.profileShares.includes(user.email) ? (
                     <Link
                       to={`/profile/${c.email}`}
                       className="btn btn-sm btn-outline-info"
@@ -275,7 +276,9 @@ export default function Jobs() {
             >
               <div className="d-flex justify-content-between">
                 <div>
-                  <strong>{p.title}</strong> ({p.postType}) by {p.authorEmail}
+                  <strong>{p.title}</strong> ({p.postType}) by{' '}
+                  {(users.find(u => u.email === p.authorEmail)?.contactName ||
+                    p.authorEmail)}
                   {viewed.has(p.id) && (
                     <span className="badge bg-secondary ms-2">viewed</span>
                   )}
