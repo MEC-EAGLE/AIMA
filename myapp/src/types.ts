@@ -14,6 +14,9 @@ export interface User {
   profileRequests: string[];
   profileShares: string[];
   recommendations?: Recommendation[];
+  events: CalendarEvent[];
+  notes: Note[];
+  peopleMap?: PeopleNeed[];
 }
 
 export interface Recommendation {
@@ -52,4 +55,22 @@ export interface Message {
   to: string;
   text: string;
   timestamp: number;
+}
+
+export interface CalendarEvent {
+  id: number;
+  title: string;
+  date: string;
+  alert: boolean;
+}
+
+export interface Note {
+  id: number;
+  text: string;
+  timestamp: number;
+}
+
+export interface PeopleNeed {
+  role: string;
+  count: number;
 }

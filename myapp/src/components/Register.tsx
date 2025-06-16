@@ -34,12 +34,17 @@ export default function Register() {
       recommendations: [],
       resume: '',
       bio: '',
+      events: [],
+      notes: [],
     };
     if (type === 'member' || type === 'candidate') {
       newUser.skills = skills
         .split(',')
         .map((s: string) => s.trim())
         .filter((s: string) => s);
+    }
+    if (type === 'org') {
+      newUser.peopleMap = [];
     }
     users.push(newUser);
     await saveUsers(users);

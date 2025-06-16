@@ -183,6 +183,12 @@ export default function Jobs() {
                         <option value="interview">interview</option>
                         <option value="offer">offer</option>
                       </select>
+                  <Link
+                    to="/interview"
+                    className="btn btn-sm btn-outline-primary mt-1 ms-2"
+                  >
+                    Start Interview
+                  </Link>
                     </li>
                   ))}
                 </ul>

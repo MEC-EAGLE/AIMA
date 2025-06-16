@@ -15,6 +15,10 @@ import Search from './components/Search';
 import Chat from './components/Chat';
 import Jobs from './components/Jobs';
 import Profile from './components/Profile';
+import Calendar from './components/Calendar';
+import Notes from './components/Notes';
+import PeopleMap from './components/PeopleMap';
+import Interview from './components/Interview';
 
 function App() {
   return (
@@ -31,6 +35,10 @@ function App() {
         <Route path="/verify" element={<Verify />} />
         <Route path="/chat/:email" element={<Chat />} />
         <Route path="/profile/:email" element={<Profile />} />
+        <Route path="/calendar" element={<Calendar />} />
+        <Route path="/notes" element={<Notes />} />
+        <Route path="/people-map" element={<PeopleMap />} />
+        <Route path="/interview" element={<Interview />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>

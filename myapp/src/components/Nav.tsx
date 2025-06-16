@@ -5,6 +5,9 @@ export default function Nav() {
     localStorage.removeItem('currentUser');
   };
 
+  const current = localStorage.getItem('currentUser');
+  const me = current ? JSON.parse(current) : null;
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container">
@@ -46,6 +49,23 @@ export default function Nav() {
                 Search
               </Link>
             </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/calendar">
+                Calendar
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/notes">
+                Notes
+              </Link>
+            </li>
+            {me && me.type === 'org' && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/people-map">
+                  People Map
+                </Link>
+              </li>
+            )}
           </ul>
           <Link
             to="/login"
