@@ -60,7 +60,17 @@ export default function Dashboard() {
     }
   }, [navigate]);
 
-  if (!user) return null;
+  if (!user) {
+    return (
+      <div>
+        <Nav />
+        <div className="container my-4">
+          <h2>Dashboard</h2>
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   const memberGroups = allGroups.filter(g => g.members.includes(user.email));
   const otherMembers = users.filter(
