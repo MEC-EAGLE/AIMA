@@ -17,6 +17,13 @@ export default function Dashboard() {
   const [users, setUsers] = useState([] as any[]);
   const [allGroups, setAllGroups] = useState([] as any[]);
   const [active, setActive] = useState('welcome');
+  const [commentText, setCommentText] = useState({} as any);
+  const [resumeText, setResumeText] = useState('');
+  const [bio, setBio] = useState('');
+  const [skillsInput, setSkillsInput] = useState('');
+  const [docName, setDocName] = useState('');
+  const [oldPass, setOldPass] = useState('');
+  const [newPass, setNewPass] = useState('');
 
   useEffect(() => {
     const u = localStorage.getItem('currentUser');
@@ -98,20 +105,12 @@ export default function Dashboard() {
     return false;
   };
 
-  const [commentText, setCommentText] = useState({} as any);
-  const [resumeText, setResumeText] = useState('');
-  const [bio, setBio] = useState('');
-  const [skillsInput, setSkillsInput] = useState('');
-  const [docName, setDocName] = useState('');
-  const [oldPass, setOldPass] = useState('');
-  const [newPass, setNewPass] = useState('');
-
   return (
     <div>
       <Nav />
       <div className="container my-4">
         <h2>Dashboard</h2>
-        <p>Welcome, Funny Bunny!</p>
+        <p>Welcome, {user.contactName || user.email}!</p>
 
         <nav className="nav nav-pills flex-wrap mb-3">
           <button
@@ -182,7 +181,7 @@ export default function Dashboard() {
         {active === 'welcome' && (
           <div>
             <h4>Welcome</h4>
-            <p>Welcome, Funny Bunny!</p>
+            <p>Welcome, {user.contactName || user.email}!</p>
           </div>
         )}
 
