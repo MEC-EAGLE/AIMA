@@ -13,7 +13,7 @@ export default function Jobs() {
   const [hidden, setHidden] = useState(new Set<number>());
   const [saved, setSaved] = useState(new Set<number>());
   const [viewed, setViewed] = useState(new Set<number>());
-  const [candidateQuery, setCandidateQuery] = useState('');
+  const [memberQuery, setMemberQuery] = useState('');
 
   useEffect(() => {
     const u = localStorage.getItem('currentUser');
@@ -56,7 +56,7 @@ export default function Jobs() {
   });
 
   const apply = async (id: number) => {
-    if (user.type === 'candidate' && (!user.skills || user.skills.length === 0)) {
+    if (!user.skills || user.skills.length === 0) {
       alert('Please complete your profile before applying.');
       return;
     }
@@ -115,13 +115,13 @@ export default function Jobs() {
 
   if (user.type === 'org') {
     const mine = posts.filter(p => p.authorEmail === user.email);
-    const candidates = users.filter(
+    const matchedMembers = users.filter(
       u =>
-        (u.type === 'member' || u.type === 'candidate') &&
-        candidateQuery &&
+        u.type === 'member' &&
+        memberQuery &&
         u.skills &&
         u.skills.some((s: string) =>
-          s.toLowerCase().includes(candidateQuery.toLowerCase())
+          s.toLowerCase().includes(memberQuery.toLowerCase())
         )
     );
     return (
@@ -196,15 +196,15 @@ export default function Jobs() {
             </div>
           ))}
           <div className="mt-4">
-            <h4>Search Candidates</h4>
-            <input
-              className="form-control mb-2"
-              placeholder="Search by skill"
-              value={candidateQuery}
-              onChange={e => setCandidateQuery(e.target.value)}
-            />
+          <h4>Search Members</h4>
+          <input
+            className="form-control mb-2"
+            placeholder="Search by skill"
+            value={memberQuery}
+            onChange={e => setMemberQuery(e.target.value)}
+          />
             <ul className="list-group">
-              {candidates.map(c => (
+              {matchedMembers.map(c => (
                 <li key={c.email} className="list-group-item d-flex justify-content-between align-items-center">
                   <span>
                     {c.email} - {(c.skills || []).join(', ')}
@@ -304,7 +304,7 @@ export default function Jobs() {
                   >
                     Hide
                   </button>
-                  {(user.type === 'member' || user.type === 'candidate') && (
+                  {user.type === 'member' && (
                     p.applicants.includes(user.email) ? (
                       <button
                         type="button"
@@ -324,11 +324,9 @@ export default function Jobs() {
                           e.stopPropagation();
                           apply(p.id);
                         }}
-                        disabled={
-                          user.type === 'candidate' && (!user.skills || user.skills.length === 0)
-                        }
+                        disabled={!user.skills || user.skills.length === 0}
                         title={
-                          user.type === 'candidate' && (!user.skills || user.skills.length === 0)
+                          !user.skills || user.skills.length === 0
                             ? 'Complete your profile to apply'
                             : undefined
                         }

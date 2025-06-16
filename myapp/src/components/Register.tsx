@@ -41,7 +41,7 @@ export default function Register() {
       blocked: [],
       resetCode: '',
     };
-    if (type === 'member' || type === 'candidate') {
+    if (type === 'member') {
       newUser.skills = skills
         .split(',')
         .map((s: string) => s.trim())
@@ -109,7 +109,6 @@ export default function Register() {
             onChange={e => setType(e.target.value)}
           >
             <option value="member">Community Member</option>
-            <option value="candidate">Candidate</option>
             <option value="org">Organization</option>
           </select>
         </div>

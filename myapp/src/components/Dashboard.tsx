@@ -42,8 +42,7 @@ export default function Dashboard() {
 
   const memberGroups = allGroups.filter(g => g.members.includes(user.email));
   const otherMembers = users.filter(
-    u =>
-      (u.type === 'member' || u.type === 'candidate') && u.email !== user.email
+    u => u.type === 'member' && u.email !== user.email
   );
   const orgsOffering = users.filter(
     u => u.type === 'org' && posts.some(p => p.authorEmail === u.email)
@@ -62,7 +61,7 @@ export default function Dashboard() {
       return contact || sameGroup;
     }
     if (p.authorType === 'org') {
-      return user.type === 'member' || user.type === 'candidate';
+      return user.type === 'member';
     }
     return false;
   };
@@ -492,7 +491,7 @@ export default function Dashboard() {
               <li key={p.id} className="list-group-item">
                 <strong>{p.title}</strong> ({p.postType}) by {p.authorEmail}
                 <p>{p.description}</p>
-                {(user.type === 'member' || user.type === 'candidate') && (
+                {user.type === 'member' && (
                   p.applicants.includes(user.email) ? (
                     <button
                       type="button"
@@ -512,9 +511,7 @@ export default function Dashboard() {
                       type="button"
                       className="btn btn-sm btn-primary"
                       onClick={async () => {
-                        if (
-                          user.type === 'candidate' && (!user.skills || user.skills.length === 0)
-                        ) {
+                        if (!user.skills || user.skills.length === 0) {
                           alert('Please complete your profile before applying.');
                           return;
                         }
@@ -524,11 +521,9 @@ export default function Dashboard() {
                         await savePosts(all);
                         setPosts(all);
                       }}
-                      disabled={
-                        user.type === 'candidate' && (!user.skills || user.skills.length === 0)
-                      }
+                      disabled={!user.skills || user.skills.length === 0}
                       title={
-                        user.type === 'candidate' && (!user.skills || user.skills.length === 0)
+                        !user.skills || user.skills.length === 0
                           ? 'Complete your profile to apply'
                           : undefined
                       }

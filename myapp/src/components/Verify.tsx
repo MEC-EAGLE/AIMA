@@ -12,8 +12,18 @@ export default function Verify() {
     if (idx !== -1) {
       users[idx].verified = true;
       await saveUsers(users);
+      const current = localStorage.getItem('currentUser');
+      if (current) {
+        const parsed = JSON.parse(current);
+        if (parsed.email === email) {
+          parsed.verified = true;
+          localStorage.setItem('currentUser', JSON.stringify(parsed));
+        }
+      }
       alert('Account verified! You can now login.');
       navigate('/login');
+    } else {
+      alert('User not found.');
     }
   };
 

@@ -3,7 +3,7 @@ export interface User {
   password: string;
   phone: string;
   contactName: string;
-  type: 'member' | 'candidate' | 'org' | 'admin';
+  type: 'member' | 'org' | 'admin';
   verified: boolean;
   followers: string[];
   groups: number[];
