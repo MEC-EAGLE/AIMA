@@ -182,6 +182,113 @@ export default function Dashboard() {
           <div>
             <h4>Welcome</h4>
             <p>Welcome, {user.contactName || user.email}!</p>
+
+            <h4>Opportunities</h4>
+            {posts.length === 0 && <p>No posts yet.</p>}
+            <div className="card">
+              <ul className="list-group list-group-flush">
+                {posts.map(p => (
+                  <li key={p.id} className="list-group-item">
+                    <strong>{p.title}</strong> ({p.postType}) by {p.authorEmail}
+                    <p>{p.description}</p>
+                    {user.type === 'member' && (
+                      p.applicants.includes(user.email) ? (
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-warning"
+                          onClick={async () => {
+                            const all = await getPosts();
+                            const idx = all.findIndex(x => x.id === p.id);
+                            all[idx].applicants = all[idx].applicants.filter(
+                              (a: string) => a !== user.email
+                            );
+                            await savePosts(all);
+                            setPosts(all);
+                          }}
+                        >
+                          Withdraw
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-primary"
+                          onClick={async () => {
+                            if (!user.skills || user.skills.length === 0) {
+                              alert('Please complete your profile before applying.');
+                              return;
+                            }
+                            const all = await getPosts();
+                            const idx = all.findIndex(x => x.id === p.id);
+                            all[idx].applicants.push(user.email);
+                            await savePosts(all);
+                            setPosts(all);
+                          }}
+                          disabled={!user.skills || user.skills.length === 0}
+                          title={
+                            !user.skills || user.skills.length === 0
+                              ? 'Complete your profile to apply'
+                              : undefined
+                          }
+                        >
+                          Apply
+                        </button>
+                      )
+                    )}
+                    {p.applicants.includes(user.email) && (
+                      <div className="mt-2">
+                        <small className="text-muted">
+                          Status: {p.statuses[user.email] || 'applied'}
+                        </small>
+                      </div>
+                    )}
+                    <div className="mt-2">
+                      <strong>Comments</strong>
+                      <ul className="list-group mb-2">
+                        {p.comments.map((c: any, i: number) => (
+                          <li key={i} className="list-group-item">
+                            <small>{c.userEmail}</small>: {c.text}
+                          </li>
+                        ))}
+                      </ul>
+                      {canComment(p) && (
+                        <form
+                          className="d-flex"
+                          onSubmit={async e => {
+                            e.preventDefault();
+                            const text = commentText[p.id] || '';
+                            if (!text) return;
+                            const all = await getPosts();
+                            const idx = all.findIndex(x => x.id === p.id);
+                            all[idx].comments.push({
+                              userEmail: user.email,
+                              text,
+                              timestamp: Date.now(),
+                            });
+                            await savePosts(all);
+                            setPosts(all);
+                            setCommentText({ ...commentText, [p.id]: '' });
+                          }}
+                        >
+                          <input
+                            className="form-control form-control-sm me-2"
+                            value={commentText[p.id] || ''}
+                            onChange={e =>
+                              setCommentText({
+                                ...commentText,
+                                [p.id]: e.target.value,
+                              })
+                            }
+                          />
+                          <button type="submit" className="btn btn-sm btn-secondary">
+                            Comment
+                          </button>
+                        </form>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         )}
 
@@ -514,110 +621,6 @@ export default function Dashboard() {
           </div>
         )}
 
-        <h4>Opportunities</h4>
-        {posts.length === 0 && <p>No posts yet.</p>}
-        <div className="card">
-          <ul className="list-group list-group-flush">
-            {posts.map(p => (
-              <li key={p.id} className="list-group-item">
-                <strong>{p.title}</strong> ({p.postType}) by {p.authorEmail}
-                <p>{p.description}</p>
-                {user.type === 'member' && (
-                  p.applicants.includes(user.email) ? (
-                    <button
-                      type="button"
-                      className="btn btn-sm btn-warning"
-                      onClick={async () => {
-                        const all = await getPosts();
-                        const idx = all.findIndex(x => x.id === p.id);
-                        all[idx].applicants = all[idx].applicants.filter((a: string) => a !== user.email);
-                        await savePosts(all);
-                        setPosts(all);
-                      }}
-                    >
-                      Withdraw
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      className="btn btn-sm btn-primary"
-                      onClick={async () => {
-                        if (!user.skills || user.skills.length === 0) {
-                          alert('Please complete your profile before applying.');
-                          return;
-                        }
-                        const all = await getPosts();
-                        const idx = all.findIndex(x => x.id === p.id);
-                        all[idx].applicants.push(user.email);
-                        await savePosts(all);
-                        setPosts(all);
-                      }}
-                      disabled={!user.skills || user.skills.length === 0}
-                      title={
-                        !user.skills || user.skills.length === 0
-                          ? 'Complete your profile to apply'
-                          : undefined
-                      }
-                    >
-                      Apply
-                    </button>
-                  )
-                )}
-                {p.applicants.includes(user.email) && (
-                  <div className="mt-2">
-                    <small className="text-muted">
-                      Status: {p.statuses[user.email] || 'applied'}
-                    </small>
-                  </div>
-                )}
-                <div className="mt-2">
-                  <strong>Comments</strong>
-                  <ul className="list-group mb-2">
-                    {p.comments.map((c: any, i: number) => (
-                      <li key={i} className="list-group-item">
-                        <small>{c.userEmail}</small>: {c.text}
-                      </li>
-                    ))}
-                  </ul>
-                  {canComment(p) && (
-                    <form
-                      className="d-flex"
-                      onSubmit={async e => {
-                        e.preventDefault();
-                        const text = commentText[p.id] || '';
-                        if (!text) return;
-                        const all = await getPosts();
-                        const idx = all.findIndex(x => x.id === p.id);
-                        all[idx].comments.push({
-                          userEmail: user.email,
-                          text,
-                          timestamp: Date.now(),
-                        });
-                        await savePosts(all);
-                        setPosts(all);
-                        setCommentText({ ...commentText, [p.id]: '' });
-                      }}
-                    >
-                      <input
-                        className="form-control form-control-sm me-2"
-                        value={commentText[p.id] || ''}
-                        onChange={e =>
-                          setCommentText({
-                            ...commentText,
-                            [p.id]: e.target.value,
-                          })
-                        }
-                      />
-                      <button type="submit" className="btn btn-sm btn-secondary">
-                        Comment
-                      </button>
-                    </form>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
       </div>
     </div>
   );
