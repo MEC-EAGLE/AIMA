@@ -14,10 +14,12 @@ export default function Chat() {
   const [text, setText] = useState('');
   const [msgs, setMsgs] = useState([] as any[]);
   const [targetName, setTargetName] = useState(email || '');
-  const [canChat, setCanChat] = useState(true);
+  const [canChat, setCanChat] = useState(false);
   const [files, setFiles] = useState([] as { name: string; data: string }[]);
   const [group, setGroup] = useState<any>(null);
   const [users, setUsers] = useState([] as any[]);
+  const [inviteFromOther, setInviteFromOther] = useState(false);
+  const [inviteSent, setInviteSent] = useState(false);
 
   useEffect(() => {
     getMessages().then(all =>
@@ -41,12 +43,18 @@ export default function Chat() {
       const blocked =
         other?.blocked?.includes(current.email) || me?.blocked?.includes(email);
       const snoozed = me?.snoozed || other?.snoozed;
-      if (email?.startsWith('group-')) {
-        // membership handled below
-        setCanChat(!blocked && !snoozed);
-      } else {
-        setCanChat(!blocked && !snoozed);
+      let allowed = !blocked && !snoozed;
+      if (!email?.startsWith('group-') && me && other) {
+        const connected =
+          (me.dmContacts || []).includes(email) ||
+          (other.dmContacts || []).includes(current.email);
+        const fromOther = (me.dmInvites || []).includes(email);
+        const sent = (other.dmInvites || []).includes(current.email);
+        setInviteFromOther(fromOther);
+        setInviteSent(sent);
+        allowed = allowed && connected;
       }
+      setCanChat(allowed);
       if (other) {
         setTargetName(other.contactName);
       }
@@ -138,6 +146,22 @@ export default function Chat() {
       setGroup(all[idx]);
       setCanChat(true);
     }
+  };
+
+  const acceptDm = async () => {
+    const all = await getUsers();
+    const idxMe = all.findIndex(u => u.email === current.email);
+    const idxOther = all.findIndex(u => u.email === email);
+    if (idxMe === -1 || idxOther === -1) return;
+    all[idxMe].dmInvites = (all[idxMe].dmInvites || []).filter((e: string) => e !== email);
+    if (!all[idxMe].dmContacts) all[idxMe].dmContacts = [];
+    if (!all[idxOther].dmContacts) all[idxOther].dmContacts = [];
+    if (!all[idxMe].dmContacts.includes(email)) all[idxMe].dmContacts.push(email);
+    if (!all[idxOther].dmContacts.includes(current.email)) all[idxOther].dmContacts.push(current.email);
+    await saveUsers(all);
+    localStorage.setItem('currentUser', JSON.stringify(all[idxMe]));
+    setInviteFromOther(false);
+    setCanChat(true);
   };
 
   return (
@@ -292,6 +316,14 @@ export default function Chat() {
             <button type="button" className="btn btn-sm btn-outline-secondary mt-2" onClick={inviteToGroup}>
               Invite Member
             </button>
+          )}
+          {!email?.startsWith('group-') && inviteFromOther && !canChat && (
+            <button type="button" className="btn btn-sm btn-primary mt-2" onClick={acceptDm}>
+              Accept DM Invite
+            </button>
+          )}
+          {!email?.startsWith('group-') && inviteSent && !canChat && (
+            <div className="text-muted mt-2">Waiting for invite acceptance</div>
           )}
           {!canChat && (
             <div className="text-danger mt-2">Messaging is unavailable</div>

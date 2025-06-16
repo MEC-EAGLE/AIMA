@@ -7,7 +7,7 @@ export default function Community() {
   const [users, setUsers] = useState([] as any[]);
   const [groups, setGroups] = useState([] as any[]);
   const [newGroupName, setNewGroupName] = useState('');
-  const [view, setView] = useState('members' as 'members' | 'groups');
+  const [view, setView] = useState('members' as 'members' | 'groups' | 'dms');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -106,6 +106,49 @@ export default function Community() {
     setUsers(all.filter(x => x.email !== all[idx].email));
   };
 
+  const sendDmInvite = async (email: string) => {
+    const all = await getUsers();
+    const idx = all.findIndex(u => u.email === email);
+    if (idx === -1) return;
+    if (!all[idx].dmInvites) all[idx].dmInvites = [];
+    if (
+      !all[idx].dmInvites.includes(current.email) &&
+      !(all[idx].dmContacts || []).includes(current.email)
+    ) {
+      all[idx].dmInvites.push(current.email);
+      await saveUsers(all);
+      setUsers(all.filter(x => x.email !== current.email));
+    }
+  };
+
+  const acceptDmInvite = async (email: string) => {
+    const all = await getUsers();
+    const meIdx = all.findIndex(u => u.email === current.email);
+    const otherIdx = all.findIndex(u => u.email === email);
+    if (meIdx === -1 || otherIdx === -1) return;
+    all[meIdx].dmInvites = (all[meIdx].dmInvites || []).filter((e: string) => e !== email);
+    if (!all[meIdx].dmContacts) all[meIdx].dmContacts = [];
+    if (!all[otherIdx].dmContacts) all[otherIdx].dmContacts = [];
+    if (!all[meIdx].dmContacts.includes(email)) all[meIdx].dmContacts.push(email);
+    if (!all[otherIdx].dmContacts.includes(current.email)) all[otherIdx].dmContacts.push(current.email);
+    await saveUsers(all);
+    const me = all[meIdx];
+    setCurrent(me);
+    localStorage.setItem('currentUser', JSON.stringify(me));
+    setUsers(all.filter(x => x.email !== me.email));
+  };
+
+  const declineDmInvite = async (email: string) => {
+    const all = await getUsers();
+    const meIdx = all.findIndex(u => u.email === current.email);
+    if (meIdx === -1) return;
+    all[meIdx].dmInvites = (all[meIdx].dmInvites || []).filter((e: string) => e !== email);
+    await saveUsers(all);
+    const me = all[meIdx];
+    setCurrent(me);
+    localStorage.setItem('currentUser', JSON.stringify(me));
+  };
+
   const profileComplete = (u: any) =>
     u.skills && u.skills.length > 0 && u.bio && u.resume;
 
@@ -154,6 +197,13 @@ export default function Community() {
               onClick={() => setView('groups')}
             >
               Groups
+            </button>
+            <button
+              type="button"
+              className={`nav-link ${view === 'dms' ? 'active' : ''}`}
+              onClick={() => setView('dms')}
+            >
+              DMs
             </button>
           </nav>
           {view === 'members' && (
@@ -207,9 +257,41 @@ export default function Community() {
                           : 'Request Profile'}
                       </button>
                     )}
-                    <Link to={`/chat/${u.email}`} className="btn btn-sm btn-secondary">
-                      Message
-                    </Link>
+                    {current.dmContacts?.includes(u.email) ||
+                    (u.dmContacts && u.dmContacts.includes(current.email)) ? (
+                      <Link to={`/chat/${u.email}`} className="btn btn-sm btn-secondary me-2">
+                        Message
+                      </Link>
+                    ) : current.dmInvites?.includes(u.email) ? (
+                      <span className="me-2">
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-success me-1"
+                          onClick={() => acceptDmInvite(u.email)}
+                        >
+                          Accept DM
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-danger"
+                          onClick={() => declineDmInvite(u.email)}
+                        >
+                          Decline
+                        </button>
+                      </span>
+                    ) : u.dmInvites && u.dmInvites.includes(current.email) ? (
+                      <button type="button" className="btn btn-sm btn-outline-secondary me-2" disabled>
+                        Invite Sent
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-secondary me-2"
+                        onClick={() => sendDmInvite(u.email)}
+                      >
+                        DM Invite
+                      </button>
+                    )}
                     <button
                       type="button"
                       className="btn btn-sm btn-outline-danger ms-2"
@@ -289,6 +371,49 @@ export default function Community() {
                   Create
                 </button>
               </div>
+            </div>
+          )}
+          {view === 'dms' && (
+            <div>
+              <h5>Your Chats</h5>
+              <ul className="list-group mb-3">
+                {(current.dmContacts || []).map(email => (
+                  <li key={email} className="list-group-item d-flex justify-content-between align-items-center">
+                    <span>{users.find(u => u.email === email)?.contactName || email}</span>
+                    <Link to={`/chat/${email}`} className="btn btn-sm btn-secondary">
+                      Message
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              {current.dmInvites && current.dmInvites.length > 0 && (
+                <div>
+                  <h5>Pending Invites</h5>
+                  <ul className="list-group">
+                    {current.dmInvites.map((e: string) => (
+                      <li key={e} className="list-group-item d-flex justify-content-between align-items-center">
+                        <span>{users.find(u => u.email === e)?.contactName || e}</span>
+                        <span>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-success me-2"
+                            onClick={() => acceptDmInvite(e)}
+                          >
+                            Accept
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-danger"
+                            onClick={() => declineDmInvite(e)}
+                          >
+                            Decline
+                          </button>
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           )}
         </div>

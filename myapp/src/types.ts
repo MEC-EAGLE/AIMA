@@ -20,6 +20,8 @@ export interface User {
   peopleMap?: PeopleNeed[];
   snoozed?: boolean;
   blocked?: string[];
+  dmContacts?: string[];
+  dmInvites?: string[];
   resetCode?: string;
 }
 

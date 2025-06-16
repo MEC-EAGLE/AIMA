@@ -52,6 +52,8 @@ export default function Dashboard() {
         skills: [],
         blocked: [],
         snoozed: false,
+        dmContacts: [],
+        dmInvites: [],
         ...parsed,
       };
       setUser(complete);

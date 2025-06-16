@@ -41,6 +41,8 @@ export default function Register() {
       notes: [],
       snoozed: false,
       blocked: [],
+      dmContacts: [],
+      dmInvites: [],
       resetCode: '',
     };
     if (type === 'member') {
