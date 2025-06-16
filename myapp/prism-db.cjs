@@ -34,7 +34,9 @@ function read() {
       return JSON.parse(text);
     }
     return JSON.parse(decrypt(text));
-  } catch {
+  } catch (err) {
+    console.error('DB read failed, resetting file', err);
+    write({ ...DEFAULT });
     return { ...DEFAULT };
   }
 }
