@@ -23,7 +23,15 @@ export default function Dashboard() {
     if (!u) {
       navigate('/login');
     } else {
-      const parsed = JSON.parse(u);
+      let parsed: any;
+      try {
+        parsed = JSON.parse(u);
+      } catch (err) {
+        console.error('Failed to parse currentUser from storage', err);
+        localStorage.removeItem('currentUser');
+        navigate('/login');
+        return;
+      }
       const complete = {
         followers: [],
         groups: [],
