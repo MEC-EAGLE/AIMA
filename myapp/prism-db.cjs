@@ -3,7 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
-const SECRET = 'aima-demo-secret-key-32chars!!';
+// Use a 32 byte key for AES-256 encryption
+const SECRET = 'aima-demo-secret-key-32-chars-!!';
 
 function encrypt(text) {
   const iv = crypto.randomBytes(16);
