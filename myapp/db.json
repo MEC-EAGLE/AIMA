@@ -3,7 +3,24 @@
     {
       "email": "test@example.com",
       "password": "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1",
-      "verified": true
+      "phone": "0000000000",
+      "contactName": "Test User",
+      "type": "member",
+      "verified": true,
+      "followers": [],
+      "groups": [],
+      "skills": ["testing"],
+      "resume": "",
+      "bio": "",
+      "docs": [],
+      "profileRequests": [],
+      "profileShares": [],
+      "recommendations": [],
+      "events": [],
+      "notes": [],
+      "snoozed": false,
+      "blocked": [],
+      "resetCode": ""
     }
   ],
   "posts": [],

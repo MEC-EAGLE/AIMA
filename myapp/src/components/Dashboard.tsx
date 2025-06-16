@@ -24,10 +24,24 @@ export default function Dashboard() {
       navigate('/login');
     } else {
       const parsed = JSON.parse(u);
-      setUser(parsed);
-      setResumeText(parsed.resume || '');
-      setBio(parsed.bio || '');
-      setSkillsInput((parsed.skills || []).join(', '));
+      const complete = {
+        followers: [],
+        groups: [],
+        docs: [],
+        profileRequests: [],
+        profileShares: [],
+        recommendations: [],
+        events: [],
+        notes: [],
+        skills: [],
+        blocked: [],
+        snoozed: false,
+        ...parsed,
+      };
+      setUser(complete);
+      setResumeText(complete.resume || '');
+      setBio(complete.bio || '');
+      setSkillsInput((complete.skills || []).join(', '));
       Promise.all([getPosts(), getUsers(), getGroups()]).then(
         ([p, us, gs]) => {
           setPosts(p);
