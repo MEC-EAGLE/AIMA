@@ -28,6 +28,11 @@ export default function Register() {
       verified: false,
       followers: [],
       groups: [],
+      docs: [],
+      profileRequests: [],
+      profileShares: [],
+      resume: '',
+      bio: '',
     };
     if (type === 'member' || type === 'candidate') {
       newUser.skills = skills

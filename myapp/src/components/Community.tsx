@@ -47,6 +47,17 @@ export default function Community() {
     setGroups(all);
   };
 
+  const requestProfile = async (email: string) => {
+    const all = await getUsers();
+    const idx = all.findIndex(u => u.email === email);
+    if (!all[idx].profileRequests) all[idx].profileRequests = [];
+    if (!all[idx].profileRequests.includes(current.email)) {
+      all[idx].profileRequests.push(current.email);
+      await saveUsers(all);
+      setUsers(all.filter(x => x.email !== current.email));
+    }
+  };
+
   if (!current) return null;
 
   return (
@@ -86,10 +97,26 @@ export default function Community() {
                     >
                       {current.followers.includes(u.email) ? 'Unfollow' : 'Follow'}
                     </button>
-                    <Link
-                      to={`/chat/${u.email}`}
-                      className="btn btn-sm btn-secondary"
-                    >
+                    {u.profileShares && u.profileShares.includes(current.email) ? (
+                      <Link
+                        to={`/profile/${u.email}`}
+                        className="btn btn-sm btn-outline-info me-2"
+                      >
+                        View Profile
+                      </Link>
+                    ) : (
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-info me-2"
+                        onClick={() => requestProfile(u.email)}
+                        disabled={u.profileRequests && u.profileRequests.includes(current.email)}
+                      >
+                        {u.profileRequests && u.profileRequests.includes(current.email)
+                          ? 'Requested'
+                          : 'Request Profile'}
+                      </button>
+                    )}
+                    <Link to={`/chat/${u.email}`} className="btn btn-sm btn-secondary">
                       Message
                     </Link>
                   </div>

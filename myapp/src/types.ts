@@ -8,6 +8,11 @@ export interface User {
   followers: string[];
   groups: number[];
   skills?: string[];
+  resume?: string;
+  bio?: string;
+  docs: string[];
+  profileRequests: string[];
+  profileShares: string[];
 }
 
 export interface Comment {

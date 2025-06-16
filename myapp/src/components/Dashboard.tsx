@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Nav from './Nav';
-import { getPosts, savePosts, getUsers, getGroups } from '../utils';
+import { getPosts, savePosts, getUsers, getGroups, saveUsers } from '../utils';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -18,6 +18,9 @@ export default function Dashboard() {
     } else {
       const parsed = JSON.parse(u);
       setUser(parsed);
+      setResumeText(parsed.resume || '');
+      setBio(parsed.bio || '');
+      setSkillsInput((parsed.skills || []).join(', '));
       Promise.all([getPosts(), getUsers(), getGroups()]).then(
         ([p, us, gs]) => {
           setPosts(p);
@@ -58,6 +61,10 @@ export default function Dashboard() {
   };
 
   const [commentText, setCommentText] = useState({} as any);
+  const [resumeText, setResumeText] = useState('');
+  const [bio, setBio] = useState('');
+  const [skillsInput, setSkillsInput] = useState('');
+  const [docName, setDocName] = useState('');
 
   return (
     <div>
@@ -151,9 +158,135 @@ export default function Dashboard() {
         )}
 
         {active === 'profile' && (
-          <div>
+          <div style={{ maxWidth: '600px' }}>
             <h4>Member Profile</h4>
-            <p>User type: {user.type}</p>
+            <form
+              onSubmit={async e => {
+                e.preventDefault();
+                const all = await getUsers();
+                const idx = all.findIndex(u => u.email === user.email);
+                all[idx].resume = resumeText;
+                all[idx].bio = bio;
+                all[idx].skills = skillsInput
+                  .split(',')
+                  .map(s => s.trim())
+                  .filter(s => s);
+                all[idx].docs = user.docs || [];
+                await saveUsers(all);
+                localStorage.setItem('currentUser', JSON.stringify(all[idx]));
+                setUser(all[idx]);
+              }}
+            >
+              <div className="mb-3">
+                <label className="form-label">Skills (comma separated)</label>
+                <input
+                  className="form-control"
+                  value={skillsInput}
+                  onChange={e => setSkillsInput(e.target.value)}
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Bio</label>
+                <textarea
+                  className="form-control"
+                  value={bio}
+                  onChange={e => setBio(e.target.value)}
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Resume Text</label>
+                <textarea
+                  className="form-control"
+                  value={resumeText}
+                  onChange={e => setResumeText(e.target.value)}
+                />
+                <button
+                  type="button"
+                  className="btn btn-sm btn-secondary mt-1"
+                  onClick={() => {
+                    const match = resumeText.match(/skills?:\s*(.*)/i);
+                    if (match) setSkillsInput(match[1]);
+                    if (!bio) setBio(resumeText.slice(0, 200));
+                  }}
+                >
+                  Upload Resume
+                </button>
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Add Document</label>
+                <input
+                  className="form-control"
+                  value={docName}
+                  onChange={e => setDocName(e.target.value)}
+                />
+                <button
+                  type="button"
+                  className="btn btn-sm btn-secondary mt-1"
+                  onClick={() => {
+                    if (!docName) return;
+                    const docs = user.docs ? [...user.docs, docName] : [docName];
+                    setUser({ ...user, docs });
+                    setDocName('');
+                  }}
+                >
+                  Add Document
+                </button>
+              </div>
+              {user.docs && user.docs.length > 0 && (
+                <ul className="list-group mb-3">
+                  {user.docs.map((d: string, i: number) => (
+                    <li key={i} className="list-group-item">
+                      {d}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <button type="submit" className="btn btn-primary">
+                Save Profile
+              </button>
+            </form>
+
+            <div className="mt-4">
+              <h5>Profile View Requests</h5>
+              <ul className="list-group">
+                {(user.profileRequests || []).map((r: string) => (
+                  <li key={r} className="list-group-item d-flex justify-content-between align-items-center">
+                    {r}
+                    <span>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-success me-2"
+                        onClick={async () => {
+                          const all = await getUsers();
+                          const idx = all.findIndex(u => u.email === user.email);
+                          all[idx].profileRequests = all[idx].profileRequests.filter((x: string) => x !== r);
+                          all[idx].profileShares = [...(all[idx].profileShares || []), r];
+                          await saveUsers(all);
+                          localStorage.setItem('currentUser', JSON.stringify(all[idx]));
+                          setUser(all[idx]);
+                        }}
+                      >
+                        Accept
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-danger"
+                        onClick={async () => {
+                          const all = await getUsers();
+                          const idx = all.findIndex(u => u.email === user.email);
+                          all[idx].profileRequests = all[idx].profileRequests.filter((x: string) => x !== r);
+                          await saveUsers(all);
+                          localStorage.setItem('currentUser', JSON.stringify(all[idx]));
+                          setUser(all[idx]);
+                        }}
+                      >
+                        Decline
+                      </button>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         )}
 

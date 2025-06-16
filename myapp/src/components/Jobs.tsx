@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Nav from './Nav';
-import { getPosts, savePosts, getUsers } from '../utils';
+import { getPosts, savePosts, getUsers, saveUsers } from '../utils';
 
 export default function Jobs() {
   const navigate = useNavigate();
@@ -94,6 +94,17 @@ export default function Jobs() {
     setPosts(filtered);
   };
 
+  const requestProfile = async (email: string) => {
+    const all = await getUsers();
+    const idx = all.findIndex(u => u.email === email);
+    if (!all[idx].profileRequests) all[idx].profileRequests = [];
+    if (!all[idx].profileRequests.includes(user.email)) {
+      all[idx].profileRequests.push(user.email);
+      await saveUsers(all);
+      setUsers(all);
+    }
+  };
+
   const markViewed = (id: number) => {
     if (viewed.has(id)) return;
     const v = new Set(viewed);
@@ -137,9 +148,32 @@ export default function Jobs() {
                 <ul className="list-group mb-2">
                   {p.applicants.map(a => (
                     <li key={a} className="list-group-item">
-                      {(users.find(u => u.email === a)?.skills || []).join(', ') ||
+                  {(users.find(u => u.email === a)?.skills || []).join(', ') ||
                         'No skills'}
-                      <select
+                  {(() => {
+                    const cand = users.find(u => u.email === a);
+                    if (!cand) return null;
+                    return cand.profileShares && cand.profileShares.includes(user.email) ? (
+                      <Link
+                        to={`/profile/${cand.email}`}
+                        className="btn btn-sm btn-outline-info ms-2"
+                      >
+                        View Profile
+                      </Link>
+                    ) : (
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-info ms-2"
+                        onClick={() => requestProfile(cand.email)}
+                        disabled={cand.profileRequests && cand.profileRequests.includes(user.email)}
+                      >
+                        {cand.profileRequests && cand.profileRequests.includes(user.email)
+                          ? 'Requested'
+                          : 'Request Profile'}
+                      </button>
+                    );
+                  })()}
+                  <select
                         className="form-select form-select-sm mt-1"
                         value={p.statuses[a] || 'applied'}
                         onChange={e => updateStatus(p.id, a, e.target.value)}
@@ -165,8 +199,29 @@ export default function Jobs() {
             />
             <ul className="list-group">
               {candidates.map(c => (
-                <li key={c.email} className="list-group-item">
-                  {c.email} - {(c.skills || []).join(', ')}
+                <li key={c.email} className="list-group-item d-flex justify-content-between align-items-center">
+                  <span>
+                    {c.email} - {(c.skills || []).join(', ')}
+                  </span>
+                  {c.profileShares && c.profileShares.includes(user.email) ? (
+                    <Link
+                      to={`/profile/${c.email}`}
+                      className="btn btn-sm btn-outline-info"
+                    >
+                      View Profile
+                    </Link>
+                  ) : (
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline-info"
+                      onClick={() => requestProfile(c.email)}
+                      disabled={c.profileRequests && c.profileRequests.includes(user.email)}
+                    >
+                      {c.profileRequests && c.profileRequests.includes(user.email)
+                        ? 'Requested'
+                        : 'Request Profile'}
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>
