@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom';
 import logo from '../AIMA_LOG.png';
 
 /**
- * Landing page shown at the root route. It mimics a simple job search
- * layout similar to Indeed with a prominent hero section and search form.
+ * Landing page shown at the root route. The home page introduces
+ * visitors to the AIMA community and encourages them to join.
  */
 export default function Home() {
   return (
@@ -26,31 +26,13 @@ export default function Home() {
 
       <header className="bg-light py-5">
         <div className="container text-center">
-          <h1 className="display-4 fw-bold">Find your next AI opportunity</h1>
-          <p className="lead mb-4">
-            Search thousands of jobs and connect with leading organisations.
+          <h1 className="display-4 fw-bold">Welcome to AIMA</h1>
+          <p className="lead mb-0">
+            The Artificial Intelligence Members Association (AIMA) is a global
+            network for professionals, students and organisations interested in
+            advancing the field of AI. Connect with peers, discover resources
+            and explore opportunities in a collaborative environment.
           </p>
-          <form className="row g-2 justify-content-center">
-            <div className="col-10 col-md-4">
-              <input
-                type="text"
-                className="form-control form-control-lg"
-                placeholder="Job title or keywords"
-              />
-            </div>
-            <div className="col-10 col-md-3">
-              <input
-                type="text"
-                className="form-control form-control-lg"
-                placeholder="City or remote"
-              />
-            </div>
-            <div className="col-10 col-md-auto">
-              <button type="submit" className="btn btn-light btn-lg px-4">
-                Search
-              </button>
-            </div>
-          </form>
         </div>
       </header>
 
