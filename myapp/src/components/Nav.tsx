@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import logo from '../logo.svg';
+import logo from '../logo.png';
 
 export default function Nav() {
   const handleLogout = () => {
@@ -14,7 +14,6 @@ export default function Nav() {
       <div className="container">
         <Link className="navbar-brand d-flex align-items-center" to="/dashboard">
           <img src={logo} alt="logo" />
-          AIMA
         </Link>
         <button
           className="navbar-toggler"

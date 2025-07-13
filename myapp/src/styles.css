@@ -7,19 +7,30 @@ body {
 }
 
 .navbar-brand img {
-  height: 30px;
+  height: 80px;
   margin-right: 5px;
 }
 
 .navbar-indeed {
-  background-color: var(--indeed-blue);
+  background-color: #000;
 }
 
 .navbar-indeed .navbar-brand,
 .navbar-indeed .nav-link,
-.navbar-indeed .navbar-toggler-icon,
-.navbar-indeed .btn-outline-secondary {
+.navbar-indeed .navbar-toggler-icon {
   color: #fff;
+}
+
+.navbar-indeed .btn-outline-secondary {
+  background-color: #fff;
+  color: #000;
+  border-color: #fff;
+}
+
+.navbar-indeed .btn-outline-secondary:hover {
+  background-color: #fff;
+  color: #000;
+  border-color: #fff;
 }
 
 .navbar-indeed .nav-link:hover {
@@ -27,17 +38,19 @@ body {
 }
 
 .btn-primary {
-  background-color: var(--indeed-blue);
-  border-color: var(--indeed-blue);
+  background-color: #fff;
+  border-color: #fff;
+  color: #000;
 }
 
 .btn-outline-primary {
-  color: var(--indeed-blue);
-  border-color: var(--indeed-blue);
+  background-color: #fff;
+  color: #000;
+  border-color: #fff;
 }
 
 .btn-outline-primary:hover {
-  background-color: var(--indeed-blue);
-  color: #fff;
-  border-color: var(--indeed-blue);
+  background-color: #fff;
+  color: #000;
+  border-color: #fff;
 }
