@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import logo from '../logo.png';
+import logo from '../AIMA_LOG.png';
 
 /**
  * Landing page shown at the root route. It mimics a simple job search
@@ -14,10 +14,10 @@ export default function Home() {
             <img src={logo} alt="logo" />
           </a>
           <div className="ms-auto">
-            <Link to="/login" className="btn btn-outline-primary me-2">
+            <Link to="/login" className="btn btn-light me-2">
               Login
             </Link>
-            <Link to="/register" className="btn btn-primary">
+            <Link to="/register" className="btn btn-light">
               Sign Up
             </Link>
           </div>
@@ -46,7 +46,7 @@ export default function Home() {
               />
             </div>
             <div className="col-10 col-md-auto">
-              <button type="submit" className="btn btn-primary btn-lg px-4">
+              <button type="submit" className="btn btn-light btn-lg px-4">
                 Search
               </button>
             </div>

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import logo from '../logo.png';
+import logo from '../AIMA_LOG.png';
 
 export default function Nav() {
   const handleLogout = () => {
@@ -70,7 +70,7 @@ export default function Nav() {
           </ul>
           <Link
             to="/login"
-            className="btn btn-outline-secondary"
+            className="btn btn-light"
             onClick={handleLogout}
           >
             Logout
