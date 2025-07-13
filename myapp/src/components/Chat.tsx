@@ -6,6 +6,7 @@ import {
   getGroups,
   getUsers,
   saveGroups,
+  saveUsers,
 } from '../utils';
 
 export default function Chat() {
@@ -16,7 +17,7 @@ export default function Chat() {
   const [targetName, setTargetName] = useState(email || '');
   const [canChat, setCanChat] = useState(false);
   const [files, setFiles] = useState([] as { name: string; data: string }[]);
-  const [group, setGroup] = useState<any>(null);
+  const [group, setGroup] = useState(null as any);
   const [users, setUsers] = useState([] as any[]);
   const [inviteFromOther, setInviteFromOther] = useState(false);
   const [inviteSent, setInviteSent] = useState(false);

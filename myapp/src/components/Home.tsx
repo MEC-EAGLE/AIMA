@@ -13,6 +13,7 @@ export default function Home() {
           <a className="navbar-brand fw-bold d-flex align-items-center" href="/">
             <img src={logo} alt="logo" />
           </a>
+          <span className="navbar-text mx-auto text-white">AIMA</span>
           <div className="ms-auto">
             <Link to="/login" className="btn btn-light me-2">
               Login
@@ -37,27 +38,19 @@ export default function Home() {
       </header>
 
       <section className="container my-5">
-        <h2 className="mb-4 text-center">Popular categories</h2>
-        <div className="row g-3">
-          <div className="col-6 col-md-3">
-            <div className="p-3 border rounded text-center bg-white">
-              Machine Learning
-            </div>
-          </div>
-          <div className="col-6 col-md-3">
-            <div className="p-3 border rounded text-center bg-white">
-              Data Science
-            </div>
-          </div>
-          <div className="col-6 col-md-3">
-            <div className="p-3 border rounded text-center bg-white">
-              Computer Vision
-            </div>
-          </div>
-          <div className="col-6 col-md-3">
-            <div className="p-3 border rounded text-center bg-white">Robotics</div>
-          </div>
-        </div>
+        <h2 className="mb-4 text-center">About the App</h2>
+        <p className="lead">
+          AIMA helps artificial intelligence enthusiasts connect, collaborate and
+          learn together. Share resources in community forums, join group chats
+          and manage projects all in one place. Discover job opportunities,
+          upcoming events and a growing network of talented professionals.
+        </p>
+        <ul className="list-unstyled">
+          <li>Build your professional profile</li>
+          <li>Participate in discussions and group chats</li>
+          <li>Post and find AI jobs and events</li>
+          <li>Keep personal notes and tasks organised</li>
+        </ul>
       </section>
     </>
   );
