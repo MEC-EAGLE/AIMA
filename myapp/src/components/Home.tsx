@@ -12,7 +12,6 @@ export default function Home() {
         <div className="container">
           <a className="navbar-brand fw-bold d-flex align-items-center" href="/">
             <img src={logo} alt="logo" />
-            AIMA Jobs
           </a>
           <div className="ms-auto">
             <Link to="/login" className="btn btn-outline-primary me-2">
