@@ -14,7 +14,15 @@ export default function Home() {
             <img src={logo} alt="logo" />
           </a>
           <span className="navbar-text mx-auto text-white">AIMA</span>
-          <div className="ms-auto">
+          <ul className="navbar-nav ms-auto">
+            <li className="nav-item">
+              <a className="nav-link" href="#about">About</a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="#features">Features</a>
+            </li>
+          </ul>
+          <div className="ms-lg-3 mt-2 mt-lg-0">
             <Link to="/login" className="btn btn-light me-2">
               Login
             </Link>
@@ -37,7 +45,7 @@ export default function Home() {
         </div>
       </header>
 
-      <section className="container my-5">
+      <section id="about" className="container my-5">
         <h2 className="mb-4 text-center">About the App</h2>
         <p className="lead">
           AIMA helps artificial intelligence enthusiasts connect, collaborate and
@@ -45,11 +53,13 @@ export default function Home() {
           and manage projects all in one place. Discover job opportunities,
           upcoming events and a growing network of talented professionals.
         </p>
-        <ul className="list-unstyled">
+        <ul id="features" className="list-unstyled">
           <li>Build your professional profile</li>
           <li>Participate in discussions and group chats</li>
           <li>Post and find AI jobs and events</li>
           <li>Keep personal notes and tasks organised</li>
+          <li>Share resources with peers</li>
+          <li>Organise or join community events</li>
         </ul>
       </section>
     </>
