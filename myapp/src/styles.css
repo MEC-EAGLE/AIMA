@@ -1,0 +1,43 @@
+:root {
+  --indeed-blue: #2557a7;
+}
+
+body {
+  background-color: #f5f7f8;
+}
+
+.navbar-brand img {
+  height: 30px;
+  margin-right: 5px;
+}
+
+.navbar-indeed {
+  background-color: var(--indeed-blue);
+}
+
+.navbar-indeed .navbar-brand,
+.navbar-indeed .nav-link,
+.navbar-indeed .navbar-toggler-icon,
+.navbar-indeed .btn-outline-secondary {
+  color: #fff;
+}
+
+.navbar-indeed .nav-link:hover {
+  color: #dbe4f2;
+}
+
+.btn-primary {
+  background-color: var(--indeed-blue);
+  border-color: var(--indeed-blue);
+}
+
+.btn-outline-primary {
+  color: var(--indeed-blue);
+  border-color: var(--indeed-blue);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--indeed-blue);
+  color: #fff;
+  border-color: var(--indeed-blue);
+}

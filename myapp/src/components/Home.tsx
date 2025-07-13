@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import logo from '../logo.svg';
 
 /**
  * Landing page shown at the root route. It mimics a simple job search
@@ -7,9 +8,10 @@ import { Link } from 'react-router-dom';
 export default function Home() {
   return (
     <>
-      <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+      <nav className="navbar navbar-expand-lg navbar-indeed">
         <div className="container">
-          <a className="navbar-brand fw-bold" href="/">
+          <a className="navbar-brand fw-bold d-flex align-items-center" href="/">
+            <img src={logo} alt="logo" />
             AIMA Jobs
           </a>
           <div className="ms-auto">
