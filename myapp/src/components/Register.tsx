@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { getUsers, saveUsers, hashString } from '../utils';
+import { getUsers, saveUsers, hashString, sendOtpEmail } from '../utils';
 
 export default function Register() {
   const [email, setEmail] = useState('');
@@ -96,19 +96,7 @@ export default function Register() {
     users.push(newUser);
     await saveUsers(users);
     try {
-      const service = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-      const template = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-      await fetch('https://api.emailjs.com/api/v1.0/email/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          service_id: service,
-          template_id: template,
-          user_id: publicKey,
-          template_params: { to_email: email, otp },
-        }),
-      });
+      await sendOtpEmail(email, otp);
       alert('Verification code sent to your email.');
     } catch (err) {
       console.error('Email sending failed', err);

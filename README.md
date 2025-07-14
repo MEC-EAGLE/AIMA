@@ -3,7 +3,7 @@ This is a small demo app built with React and Vite. The project simulates a comm
 
 Features
 Register as a member or organization with optional profile photo upload.
-Email-based OTP verification during registration.
+Email-based OTP verification during registration using Gmail.
 Direct messages with invite system similar to Instagram DMs.
 WhatsApp‑style group chats supporting file attachments and member invites.
 Organizations can create job posts, view applicants, and message them directly.
@@ -12,7 +12,7 @@ Simple JSON file database served via a small Node server.
 Getting Started
 Install dependencies:
 npm install
-Copy `myapp/.env.example` to `myapp/.env` and add your EmailJS keys.
+Copy `myapp/.env.example` to `myapp/.env` and add your Gmail address and app password.
 Start the local database API:
 npm run server
 In a separate terminal, start the dev server:
