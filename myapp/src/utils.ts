@@ -65,3 +65,7 @@ export async function getMessages(): Promise<Message[]> {
 export async function saveMessages(msgs: Message[]) {
   await postJSON('messages', msgs);
 }
+
+export async function sendOtpEmail(email: string, otp: string) {
+  await postJSON('send-otp', { email, otp });
+}

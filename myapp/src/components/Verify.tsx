@@ -34,6 +34,18 @@ export default function Verify() {
     }
   };
 
+  const handleQuickVerify = async () => {
+    const users = await getUsers();
+    const idx = users.findIndex(u => u.email === email);
+    if (idx !== -1) {
+      users[idx].verified = true;
+      users[idx].verificationCode = '';
+      await saveUsers(users);
+      alert('Account verified! You can now login.');
+      navigate('/login');
+    }
+  };
+
   if (!email) return <p>Invalid verification link</p>;
 
   return (
@@ -51,6 +63,13 @@ export default function Verify() {
           </div>
           <button type="button" className="btn btn-primary" onClick={handleVerify}>
             Verify
+          </button>
+          <button
+            type="button"
+            className="btn btn-link ms-2"
+            onClick={handleQuickVerify}
+          >
+            Quick Verify
           </button>
         </div>
       </div>
