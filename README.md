@@ -13,6 +13,7 @@ Getting Started
 Install dependencies:
 npm install
 Copy `myapp/.env.example` to `myapp/.env` and add your Gmail address and app password.
+If you want to pull live listings from the Indeed API, also provide `VITE_INDEED_ENDPOINT` and `VITE_INDEED_API_KEY` in that file.
 Start the local database API:
 npm run server
 To wipe all demo data, run:

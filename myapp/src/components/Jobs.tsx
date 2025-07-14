@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Nav from './Nav';
-import { getPosts, savePosts, getUsers, saveUsers } from '../utils';
+import {
+  getPosts,
+  savePosts,
+  getUsers,
+  saveUsers,
+  fetchIndeedTechJobs,
+} from '../utils';
 
 export default function Jobs() {
   const navigate = useNavigate();
@@ -10,6 +16,10 @@ export default function Jobs() {
   const [users, setUsers] = useState([] as any[]);
   const [saved, setSaved] = useState(new Set<number>());
   const [viewed, setViewed] = useState(new Set<number>());
+  const [query, setQuery] = useState('');
+  const [location, setLocation] = useState('');
+  const [techJobs, setTechJobs] = useState([] as any[]);
+  const trending = ['Remote', 'Frontend', 'Backend', 'Data Science', 'Design'];
 
   useEffect(() => {
     const u = localStorage.getItem('currentUser');
@@ -22,6 +32,12 @@ export default function Jobs() {
     setSaved(new Set(JSON.parse(localStorage.getItem('savedJobs') || '[]')));
     setViewed(new Set(JSON.parse(localStorage.getItem('viewedJobs') || '[]')));
   }, [navigate]);
+
+  useEffect(() => {
+    fetchIndeedTechJobs()
+      .then(setTechJobs)
+      .catch(err => console.error('Indeed API', err));
+  }, []);
 
   if (!user) return null;
 
@@ -42,6 +58,13 @@ export default function Jobs() {
   };
 
   const sorted = [...posts].sort((a, b) => b.id - a.id);
+  const filtered = sorted.filter(p => {
+    const q = query.toLowerCase();
+    const matchTitle = p.title.toLowerCase().includes(q);
+    const matchDesc = p.description.toLowerCase().includes(q);
+    const matchTags = p.tags.some((t: string) => t.toLowerCase().includes(q));
+    return matchTitle || matchDesc || matchTags;
+  });
 
   const apply = async (id: number) => {
     if (!user.skills || user.skills.length === 0) {
@@ -193,11 +216,48 @@ export default function Jobs() {
   return (
     <div>
       <Nav />
+      <header className="hero-indeed py-5">
+        <div className="container text-center">
+          <h1 className="display-6 fw-bold mb-4">Find your next job</h1>
+          <div className="row justify-content-center">
+            <div className="col-md-4 mb-2">
+              <input
+                className="form-control form-control-lg"
+                placeholder="Job title, keywords, or company"
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+              />
+            </div>
+            <div className="col-md-3 mb-2">
+              <input
+                className="form-control form-control-lg"
+                placeholder="City, state, or zip"
+                value={location}
+                onChange={e => setLocation(e.target.value)}
+              />
+            </div>
+            <div className="col-md-2 mb-2">
+              <button className="btn btn-light btn-lg w-100">Find jobs</button>
+            </div>
+          </div>
+          <div className="mt-3">
+            {trending.map(t => (
+              <button
+                key={t}
+                className="btn btn-sm btn-light text-dark me-2 mb-2"
+                onClick={() => setQuery(t)}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+        </div>
+      </header>
       <div className="container my-4">
         <h2>Recommended Jobs</h2>
-        {sorted.length === 0 && <p>No posts.</p>}
+        {filtered.length === 0 && <p>No posts.</p>}
         <ul className="list-group">
-          {sorted.map(p => (
+          {filtered.map(p => (
             <li
               key={p.id}
               className="list-group-item"
@@ -263,6 +323,24 @@ export default function Jobs() {
             </li>
           ))}
         </ul>
+        {techJobs.length > 0 && (
+          <>
+            <h2 className="mt-4">Tech Jobs from Indeed</h2>
+            <ul className="list-group">
+              {techJobs.map(j => (
+                <li key={j.id || j.jobkey} className="list-group-item">
+                  <a href={j.url || j.jobUrl} target="_blank" rel="noopener">
+                    <strong>{j.title}</strong>
+                  </a>
+                  {j.company_name && <span> - {j.company_name}</span>}
+                  {j.location && (
+                    <span className="text-muted ms-2">{j.location}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </div>
     </div>
   );

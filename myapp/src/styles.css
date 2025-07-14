@@ -3,8 +3,8 @@
 }
 
 body {
-  background-color: #1a1a1a;
-  color: #fff;
+  background-color: #fff;
+  color: #000;
 }
 
 .navbar-brand img {
@@ -45,47 +45,45 @@ body {
 
 /* LinkedIn-inspired styles for the landing page */
 .navbar-linkedin {
-  background-color: #fff;
+  background-color: #000;
 }
 
 .navbar-linkedin .navbar-brand,
 .navbar-linkedin .nav-link {
-  color: #0a66c2;
+  color: #fff;
   font-weight: 600;
 }
 
 .navbar-linkedin .nav-link:hover {
-  color: #004182;
+  color: #ccc;
 }
 
 .navbar-linkedin .btn-primary {
-  background-color: #0a66c2;
-  border-color: #0a66c2;
+  background-color: #fff;
+  border-color: #fff;
+  color: #000;
 }
 
 .navbar-linkedin .btn-outline-primary {
-  color: #0a66c2;
-  border-color: #0a66c2;
+  color: #fff;
+  border-color: #fff;
 }
 
 .navbar-linkedin .btn-outline-primary:hover {
-  background-color: #e7f0f9;
-  color: #0a66c2;
-  border-color: #0a66c2;
+  background-color: #fff;
+  color: #000;
+  border-color: #fff;
 }
 
 .hero-linkedin {
-  background-color: #f3f2ef;
-}
-
-/* Dark theme for AIMA */
-body {
-  background-color: #1a1a1a;
+  background-color: #000;
   color: #fff;
 }
 
+/* Dark theme for AIMA */
+
 .navbar-aima {
-  background-color: #222;
+  background-color: #000;
 }
 
 .navbar-aima .navbar-brand,
@@ -99,24 +97,24 @@ body {
 }
 
 .navbar-aima .btn-primary {
-  background-color: #0d6efd;
-  border-color: #0d6efd;
-  color: #fff;
+  background-color: #fff;
+  border-color: #fff;
+  color: #000;
 }
 
 .navbar-aima .btn-outline-primary {
   color: #fff;
-  border-color: #0d6efd;
+  border-color: #fff;
 }
 
 .navbar-aima .btn-outline-primary:hover {
-  background-color: #0d6efd;
-  color: #fff;
-  border-color: #0d6efd;
+  background-color: #fff;
+  color: #000;
+  border-color: #fff;
 }
 
 .hero-aima {
-  background-color: #222;
+  background-color: #000;
   color: #fff;
 }
 
@@ -129,8 +127,8 @@ body {
 }
 
 .info-aima {
-  background-color: #111;
-  color: #fff;
+  background-color: #f8f9fa;
+  color: #000;
 }
 
 .info-aima h2 {
@@ -139,4 +137,68 @@ body {
 
 .info-aima p {
   font-size: 1.05rem;
+}
+
+/* Indeed inspired jobs page */
+
+/* Black and white theme for jobs hero */
+.hero-indeed {
+  background-color: #000;
+  color: #fff;
+}
+
+.hero-indeed .form-control-lg {
+  border-radius: 0;
+}
+
+.hero-indeed .btn-light {
+  background-color: #fff;
+  color: #000;
+  font-weight: bold;
+  border: none;
+}
+
+/* Dashboard header */
+.dashboard-hero {
+  background-color: #000;
+  color: #fff;
+}
+
+/* Global black and white theme */
+
+.navbar-aima,
+.navbar-linkedin,
+.hero-aima {
+  background-color: #000;
+  color: #fff;
+}
+
+.navbar-aima .btn-primary,
+.navbar-linkedin .btn-primary {
+  background-color: #fff;
+  color: #000;
+  border-color: #fff;
+}
+
+.navbar-aima .btn-outline-primary,
+.navbar-linkedin .btn-outline-primary {
+  color: #fff;
+  border-color: #fff;
+}
+
+.card,
+.list-group-item {
+  background-color: #fff;
+  color: #000;
+  border-color: #ddd;
+}
+
+.form-control {
+  background-color: #fff;
+  color: #000;
+  border-color: #ccc;
+}
+
+.form-control::placeholder {
+  color: #777;
 }
