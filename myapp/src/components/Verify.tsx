@@ -1,16 +1,23 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useState } from 'react';
 import { getUsers, saveUsers } from '../utils';
 
 export default function Verify() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
+  const [code, setCode] = useState('');
   const email = params.get('email') || '';
 
   const handleVerify = async () => {
     const users = await getUsers();
     const idx = users.findIndex(u => u.email === email);
     if (idx !== -1) {
+      if (users[idx].verificationCode !== code) {
+        alert('Invalid code');
+        return;
+      }
       users[idx].verified = true;
+      users[idx].verificationCode = '';
       await saveUsers(users);
       const current = localStorage.getItem('currentUser');
       if (current) {
@@ -34,7 +41,14 @@ export default function Verify() {
       <div className="card shadow-sm">
         <div className="card-body">
           <h2 className="card-title mb-3">Verify Account</h2>
-          <p>Click verify to activate your account for {email}.</p>
+          <p>Enter the verification code for {email}.</p>
+          <div className="mb-3">
+            <input
+              className="form-control"
+              value={code}
+              onChange={e => setCode(e.target.value)}
+            />
+          </div>
           <button type="button" className="btn btn-primary" onClick={handleVerify}>
             Verify
           </button>
