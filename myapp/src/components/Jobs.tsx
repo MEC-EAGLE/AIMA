@@ -6,7 +6,6 @@ import {
   savePosts,
   getUsers,
   saveUsers,
-  fetchIndeedTechJobs,
 } from '../utils';
 
 export default function Jobs() {
@@ -17,10 +16,6 @@ export default function Jobs() {
   const [saved, setSaved] = useState(new Set<number>());
   const [viewed, setViewed] = useState(new Set<number>());
   const [query, setQuery] = useState('');
-  const [location, setLocation] = useState('');
-  const [techJobs, setTechJobs] = useState([] as any[]);
-  const [indeedLoading, setIndeedLoading] = useState(false);
-  const trending = ['Remote', 'Frontend', 'Backend', 'Data Science', 'Design'];
 
   useEffect(() => {
     const u = localStorage.getItem('currentUser');
@@ -35,16 +30,8 @@ export default function Jobs() {
   }, [navigate]);
 
   useEffect(() => {
-    searchIndeed('tech', '');
+    // initial load already pulled posts from the database
   }, []);
-
-  const searchIndeed = (q: string, loc: string) => {
-    setIndeedLoading(true);
-    fetchIndeedTechJobs(q, loc)
-      .then(setTechJobs)
-      .catch(err => console.error('Indeed API', err))
-      .finally(() => setIndeedLoading(false));
-  };
 
   if (!user) return null;
 
@@ -216,48 +203,18 @@ export default function Jobs() {
   return (
     <div>
       <Nav />
-      <header className="hero-indeed py-5">
+      <header className="hero-aima py-5">
         <div className="container text-center">
           <h1 className="display-6 fw-bold mb-4">Find your next job</h1>
           <div className="row justify-content-center">
             <div className="col-md-4 mb-2">
               <input
                 className="form-control form-control-lg"
-                placeholder="Job title, keywords, or company"
+                placeholder="Search posts"
                 value={query}
                 onChange={e => setQuery(e.target.value)}
               />
             </div>
-            <div className="col-md-3 mb-2">
-              <input
-                className="form-control form-control-lg"
-                placeholder="City, state, or zip"
-                value={location}
-                onChange={e => setLocation(e.target.value)}
-              />
-            </div>
-            <div className="col-md-2 mb-2">
-              <button
-                className="btn btn-light btn-lg w-100"
-                onClick={() => searchIndeed(query || 'tech', location)}
-              >
-                Find jobs
-              </button>
-            </div>
-          </div>
-          <div className="mt-3">
-            {trending.map(t => (
-              <button
-                key={t}
-                className="btn btn-sm btn-light text-dark me-2 mb-2"
-                onClick={() => {
-                  setQuery(t);
-                  searchIndeed(t, location);
-                }}
-              >
-                {t}
-              </button>
-            ))}
           </div>
         </div>
       </header>
@@ -331,28 +288,6 @@ export default function Jobs() {
             </li>
           ))}
         </ul>
-        <div className="mt-4">
-          <h2>Tech Jobs from Indeed</h2>
-          {indeedLoading && <p>Loading...</p>}
-          {!indeedLoading && techJobs.length === 0 && (
-            <p>No results found.</p>
-          )}
-          {techJobs.length > 0 && (
-            <ul className="list-group">
-              {techJobs.map(j => (
-                <li key={j.id || j.jobkey} className="list-group-item">
-                  <a href={j.url || j.jobUrl} target="_blank" rel="noopener">
-                    <strong>{j.title}</strong>
-                  </a>
-                  {j.company_name && <span> - {j.company_name}</span>}
-                  {j.location && (
-                    <span className="text-muted ms-2">{j.location}</span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
       </div>
     </div>
   );
