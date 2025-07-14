@@ -7,16 +7,40 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
   const [contactName, setContactName] = useState('');
-  const [photo, setPhoto] = useState('');
+  const [resume, setResume] = useState('');
   const [type, setType] = useState('member');
   const [skills, setSkills] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      alert('Enter a valid email address');
+      return;
+    }
+    if (password.length < 6) {
+      alert('Password must be at least 6 characters');
+      return;
+    }
+    if (!/^\+?[0-9\s-]{7,15}$/.test(phone)) {
+      alert('Enter a valid phone number');
+      return;
+    }
+    if (!contactName.trim()) {
+      alert('Contact name is required');
+      return;
+    }
+    if (!resume) {
+      alert('Please upload your resume');
+      return;
+    }
     const generic = ['info@', 'contact@', 'noreply@'];
     if (type === 'org' && generic.some(g => email.startsWith(g))) {
       alert('Please use a real contact email for your organization.');
+      return;
+    }
+    if (type === 'member' && !skills.trim()) {
+      alert('Please list your skills');
       return;
     }
     const users = await getUsers();
@@ -26,7 +50,6 @@ export default function Register() {
       password: hashed,
       phone,
       contactName,
-      photo,
       type,
       verified: false,
       followers: [],
@@ -35,7 +58,7 @@ export default function Register() {
       profileRequests: [],
       profileShares: [],
       recommendations: [],
-      resume: '',
+      resume,
       bio: '',
       events: [],
       notes: [],
@@ -96,18 +119,19 @@ export default function Register() {
           />
         </div>
         <div className="mb-3">
-          <label className="form-label">Profile Photo</label>
+          <label className="form-label">Resume</label>
           <input
             type="file"
-            accept="image/*"
+            accept=".pdf,.txt,.doc,.docx"
             className="form-control"
             onChange={e => {
               const f = e.target.files?.[0];
               if (!f) return;
               const reader = new FileReader();
-              reader.onload = () => setPhoto(reader.result as string);
-              reader.readAsDataURL(f);
+              reader.onload = () => setResume(reader.result as string);
+              reader.readAsText(f);
             }}
+            required
           />
         </div>
         <div className="mb-3">
