@@ -3,7 +3,8 @@
 }
 
 body {
-  background-color: #f5f7f8;
+  background-color: #000;
+  color: #fff;
 }
 
 .navbar-brand img {
@@ -88,4 +89,46 @@ body {
 
 .hero-linkedin {
   background-color: #f3f2ef;
+}
+
+/* Black and white theme for AIMA */
+body {
+  background-color: #000;
+  color: #fff;
+}
+
+.navbar-aima {
+  background-color: #000;
+}
+
+.navbar-aima .navbar-brand,
+.navbar-aima .nav-link,
+.navbar-aima .navbar-toggler-icon {
+  color: #fff;
+}
+
+.navbar-aima .nav-link:hover {
+  color: #ccc;
+}
+
+.navbar-aima .btn-primary {
+  background-color: #fff;
+  border-color: #fff;
+  color: #000;
+}
+
+.navbar-aima .btn-outline-primary {
+  color: #fff;
+  border-color: #fff;
+}
+
+.navbar-aima .btn-outline-primary:hover {
+  background-color: #fff;
+  color: #000;
+  border-color: #fff;
+}
+
+.hero-aima {
+  background-color: #000;
+  color: #fff;
 }
