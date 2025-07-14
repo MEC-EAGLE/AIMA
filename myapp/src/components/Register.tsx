@@ -114,7 +114,6 @@ export default function Register() {
       console.error('Email sending failed', err);
       alert('Verification code could not be emailed. Code: ' + otp);
     }
-
     navigate(`/verify?email=${encodeURIComponent(email)}`);
   };
 
