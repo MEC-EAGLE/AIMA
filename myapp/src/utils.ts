@@ -69,3 +69,14 @@ export async function saveMessages(msgs: Message[]) {
 export async function sendOtpEmail(email: string, otp: string) {
   await postJSON('send-otp', { email, otp });
 }
+
+export async function fetchIndeedTechJobs(): Promise<any[]> {
+  const endpoint = import.meta.env.VITE_INDEED_ENDPOINT;
+  const key = import.meta.env.VITE_INDEED_API_KEY;
+  if (!endpoint || !key) return [];
+  const url = `${endpoint}?q=tech&limit=10`;
+  const res = await fetch(url, { headers: { 'X-Api-Key': key } });
+  if (!res.ok) throw new Error("Indeed API error");
+  const data = await res.json();
+  return data.results || data.jobs || [];
+}
