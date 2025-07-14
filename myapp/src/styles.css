@@ -3,8 +3,8 @@
 }
 
 body {
-  background-color: #000;
-  color: #fff;
+  background-color: #fff;
+  color: #000;
 }
 
 .navbar-brand img {
@@ -127,8 +127,8 @@ body {
 }
 
 .info-aima {
-  background-color: #111;
-  color: #fff;
+  background-color: #f8f9fa;
+  color: #000;
 }
 
 .info-aima h2 {
@@ -188,17 +188,17 @@ body {
 
 .card,
 .list-group-item {
-  background-color: #000;
-  color: #fff;
-  border-color: #444;
+  background-color: #fff;
+  color: #000;
+  border-color: #ddd;
 }
 
 .form-control {
-  background-color: #000;
-  color: #fff;
-  border-color: #444;
+  background-color: #fff;
+  color: #000;
+  border-color: #ccc;
 }
 
 .form-control::placeholder {
-  color: #888;
+  color: #777;
 }

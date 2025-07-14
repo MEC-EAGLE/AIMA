@@ -239,7 +239,7 @@ export default function Settings() {
               <ul className="list-group mb-3">
                 {user.docs.map((d: Attachment, i: number) => (
                   <li key={i} className="list-group-item">
-                    <a href={d.data} download={d.name} className="text-white">
+                    <a href={d.data} download={d.name} className="link-primary">
                       {d.name}
                     </a>
                   </li>
