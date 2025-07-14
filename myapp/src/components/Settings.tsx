@@ -2,14 +2,15 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Nav from './Nav';
 import { getUsers, saveUsers, hashString, getPosts, savePosts } from '../utils';
+import type { Attachment } from '../types';
 
 export default function Settings() {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
-  const [resumeText, setResumeText] = useState('');
+  const [resumeData, setResumeData] = useState('');
   const [bio, setBio] = useState('');
   const [skillsInput, setSkillsInput] = useState('');
-  const [docName, setDocName] = useState('');
+  const [docFile, setDocFile] = useState<File | null>(null);
   const [oldPass, setOldPass] = useState('');
   const [newPass, setNewPass] = useState('');
   const [photo, setPhoto] = useState('');
@@ -19,7 +20,7 @@ export default function Settings() {
     if (!stored) return navigate('/login');
     const me = JSON.parse(stored);
     setUser(me);
-    setResumeText(me.resume || '');
+    setResumeData(me.resume || '');
     setBio(me.bio || '');
     setSkillsInput((me.skills || []).join(', '));
     setPhoto(me.photo || '');
@@ -131,12 +132,14 @@ export default function Settings() {
               e.preventDefault();
               const all = await getUsers();
               const idx = all.findIndex((u: any) => u.email === user.email);
-              all[idx].resume = resumeText;
+              all[idx].resume = resumeData;
               all[idx].bio = bio;
-              all[idx].skills = skillsInput
-                .split(',')
-                .map(s => s.trim())
-                .filter(s => s);
+              if (user.type === 'member') {
+                all[idx].skills = skillsInput
+                  .split(',')
+                  .map(s => s.trim())
+                  .filter(s => s);
+              }
               all[idx].docs = user.docs || [];
               if (photo) all[idx].photo = photo;
               await saveUsers(all);
@@ -144,14 +147,16 @@ export default function Settings() {
               setUser(all[idx]);
             }}
           >
-            <div className="mb-3">
-              <label className="form-label">Skills (comma separated)</label>
-              <input
-                className="form-control"
-                value={skillsInput}
-                onChange={e => setSkillsInput(e.target.value)}
-              />
-            </div>
+            {user.type === 'member' && (
+              <div className="mb-3">
+                <label className="form-label">Skills (comma separated)</label>
+                <input
+                  className="form-control"
+                  value={skillsInput}
+                  onChange={e => setSkillsInput(e.target.value)}
+                />
+              </div>
+            )}
             <div className="mb-3">
               <label className="form-label">Profile Photo</label>
               <input
@@ -183,50 +188,60 @@ export default function Settings() {
                 onChange={e => setBio(e.target.value)}
               />
             </div>
-            <div className="mb-3">
-              <label className="form-label">Resume Text</label>
-              <textarea
-                className="form-control"
-                value={resumeText}
-                onChange={e => setResumeText(e.target.value)}
-              />
-              <button
-                type="button"
-                className="btn btn-sm btn-secondary mt-1"
-                onClick={() => {
-                  const match = resumeText.match(/skills?:\s*(.*)/i);
-                  if (match) setSkillsInput(match[1]);
-                  if (!bio) setBio(resumeText.slice(0, 200));
-                }}
-              >
-                Upload Resume
-              </button>
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Add Document</label>
-              <input
-                className="form-control"
-                value={docName}
-                onChange={e => setDocName(e.target.value)}
-              />
-              <button
-                type="button"
-                className="btn btn-sm btn-secondary mt-1"
-                onClick={() => {
-                  if (!docName) return;
-                  const docs = user.docs ? [...user.docs, docName] : [docName];
-                  setUser({ ...user, docs });
-                  setDocName('');
-                }}
-              >
-                Add Document
-              </button>
-            </div>
+            {user.type === 'member' && (
+              <div className="mb-3">
+                <label className="form-label">Resume</label>
+                <input
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  className="form-control"
+                  onChange={e => {
+                    const f = e.target.files?.[0];
+                    if (!f) return;
+                    const reader = new FileReader();
+                    reader.onload = () => setResumeData(reader.result as string);
+                    reader.readAsDataURL(f);
+                  }}
+                />
+              </div>
+            )}
+            {user.type === 'member' && (
+              <div className="mb-3">
+                <label className="form-label">Add Document</label>
+                <input
+                  type="file"
+                  className="form-control"
+                  accept=".pdf,.doc,.docx"
+                  onChange={e => setDocFile(e.target.files?.[0] || null)}
+                />
+                <button
+                  type="button"
+                  className="btn btn-sm btn-secondary mt-1"
+                  onClick={() => {
+                    if (!docFile) return;
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                      const newDoc: Attachment = {
+                        name: docFile.name,
+                        data: reader.result as string,
+                      };
+                      const docs = user.docs ? [...user.docs, newDoc] : [newDoc];
+                      setUser({ ...user, docs });
+                    };
+                    reader.readAsDataURL(docFile);
+                  }}
+                >
+                  Add Document
+                </button>
+                </div>
+            )}
             {user.docs && user.docs.length > 0 && (
               <ul className="list-group mb-3">
-                {user.docs.map((d: string, i: number) => (
+                {user.docs.map((d: Attachment, i: number) => (
                   <li key={i} className="list-group-item">
-                    {d}
+                    <a href={d.data} download={d.name} className="text-white">
+                      {d.name}
+                    </a>
                   </li>
                 ))}
               </ul>

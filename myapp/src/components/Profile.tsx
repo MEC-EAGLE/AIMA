@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Nav from './Nav';
 import { getUsers } from '../utils';
+import type { Attachment } from '../types';
 
 export default function Profile() {
   const { email } = useParams();
@@ -70,9 +71,11 @@ export default function Profile() {
           <div>
             <h5>Documents</h5>
             <ul className="list-group">
-              {user.docs.map((d: string, i: number) => (
+              {user.docs.map((d: Attachment, i: number) => (
                 <li key={i} className="list-group-item">
-                  {d}
+                  <a href={d.data} download={d.name} className="text-white">
+                    {d.name}
+                  </a>
                 </li>
               ))}
             </ul>
