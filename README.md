@@ -15,10 +15,13 @@ npm install
 Copy `myapp/.env.example` to `myapp/.env` and add your Gmail address and app password.
 Start the local database API:
 npm run server
+To wipe all demo data, run:
+npm run reset-db
 In a separate terminal, start the dev server:
 npm run dev
 Open http://localhost:5173 in your browser.
 The app stores all data in db.json under myapp/. The server runs on port 3001 by default.
+If email delivery fails during registration you can use the **Quick Verify** button on the verification page.
 
 Testing
 The project currently includes a placeholder test script:
