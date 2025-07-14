@@ -54,3 +54,38 @@ body {
   color: #000;
   border-color: #fff;
 }
+
+/* LinkedIn-inspired styles for the landing page */
+.navbar-linkedin {
+  background-color: #fff;
+}
+
+.navbar-linkedin .navbar-brand,
+.navbar-linkedin .nav-link {
+  color: #0a66c2;
+  font-weight: 600;
+}
+
+.navbar-linkedin .nav-link:hover {
+  color: #004182;
+}
+
+.navbar-linkedin .btn-primary {
+  background-color: #0a66c2;
+  border-color: #0a66c2;
+}
+
+.navbar-linkedin .btn-outline-primary {
+  color: #0a66c2;
+  border-color: #0a66c2;
+}
+
+.navbar-linkedin .btn-outline-primary:hover {
+  background-color: #e7f0f9;
+  color: #0a66c2;
+  border-color: #0a66c2;
+}
+
+.hero-linkedin {
+  background-color: #f3f2ef;
+}
