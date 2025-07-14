@@ -16,6 +16,8 @@ export default function Jobs() {
   const [saved, setSaved] = useState(new Set<number>());
   const [viewed, setViewed] = useState(new Set<number>());
   const [query, setQuery] = useState('');
+  const [location, setLocation] = useState('');
+  const trending = ['Remote', 'Frontend', 'Backend', 'Data Science', 'Design'];
 
   useEffect(() => {
     const u = localStorage.getItem('currentUser');
@@ -203,18 +205,45 @@ export default function Jobs() {
   return (
     <div>
       <Nav />
-      <header className="hero-aima py-5">
+      <header className="hero-indeed py-5">
         <div className="container text-center">
           <h1 className="display-6 fw-bold mb-4">Find your next job</h1>
           <div className="row justify-content-center">
             <div className="col-md-4 mb-2">
               <input
                 className="form-control form-control-lg"
-                placeholder="Search posts"
+                placeholder="Job title, keywords, or company"
                 value={query}
                 onChange={e => setQuery(e.target.value)}
               />
             </div>
+            <div className="col-md-3 mb-2">
+              <input
+                className="form-control form-control-lg"
+                placeholder="City, state, or zip"
+                value={location}
+                onChange={e => setLocation(e.target.value)}
+              />
+            </div>
+            <div className="col-md-2 mb-2">
+              <button
+                className="btn btn-light btn-lg w-100"
+                onClick={() => setQuery(query)}
+              >
+                Find jobs
+              </button>
+            </div>
+          </div>
+          <div className="mt-3">
+            {trending.map(t => (
+              <button
+                key={t}
+                className="btn btn-sm btn-light text-dark me-2 mb-2"
+                onClick={() => setQuery(t)}
+              >
+                {t}
+              </button>
+            ))}
           </div>
         </div>
       </header>

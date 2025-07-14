@@ -61,8 +61,16 @@ export default function Apply() {
   return (
     <div>
       <Nav />
-      <div className="container my-4" style={{ maxWidth: '600px' }}>
-        <h2 className="mb-4">Apply for {post.title}</h2>
+      <div className="hero-indeed py-5">
+        <div className="container" style={{ maxWidth: '600px' }}>
+          <h2 className="mb-4">Apply for {post.title}</h2>
+        <div className="progress apply-progress mb-4">
+          <div
+            className="progress-bar apply-progress-bar"
+            role="progressbar"
+            style={{ width: `${(step / 3) * 100}%` }}
+          ></div>
+        </div>
         {step === 1 && (
           <div>
             <h5 className="mb-3">Step 1: Upload Resume</h5>
