@@ -10,11 +10,8 @@ export default function Home() {
   return (
     <>
       <nav className="navbar navbar-aima">
-        <div className="container position-relative">
-          <Link
-            to="/"
-            className="navbar-brand position-absolute start-50 translate-middle-x d-flex align-items-center"
-          >
+        <div className="container d-flex align-items-center">
+          <Link to="/" className="navbar-brand mx-auto d-flex align-items-center">
             <img src={logo} alt="AIMA logo" className="me-2" />
             <span className="fw-bold">AIMA</span>
           </Link>

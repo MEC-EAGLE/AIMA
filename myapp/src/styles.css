@@ -8,8 +8,12 @@ body {
 }
 
 .navbar-brand img {
-  height: 80px;
-  margin-right: 5px;
+  height: 48px;
+  margin-right: 8px;
+}
+
+.navbar-brand span {
+  font-size: 1.5rem;
 }
 
 .navbar-indeed {
@@ -116,7 +120,23 @@ body {
   color: #fff;
 }
 
+.hero-aima h1 {
+  font-size: 2.5rem;
+}
+
+.hero-aima p {
+  font-size: 1.1rem;
+}
+
 .info-aima {
   background-color: #111;
   color: #fff;
+}
+
+.info-aima h2 {
+  font-size: 2rem;
+}
+
+.info-aima p {
+  font-size: 1.05rem;
 }
