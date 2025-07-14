@@ -13,13 +13,40 @@ export default function Home() {
           <a className="navbar-brand fw-bold d-flex align-items-center" href="/">
             <img src={logo} alt="logo" />
           </a>
-          <div className="ms-auto">
-            <Link to="/login" className="btn btn-outline-primary me-2">
-              Login
-            </Link>
-            <Link to="/register" className="btn btn-primary">
-              Sign Up
-            </Link>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#homeNavbar"
+          >
+            <span className="navbar-toggler-icon" />
+          </button>
+          <div className="collapse navbar-collapse" id="homeNavbar">
+            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+              <li className="nav-item">
+                <Link className="nav-link" to="/jobs">
+                  Jobs
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/community">
+                  Community
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/search">
+                  Search
+                </Link>
+              </li>
+            </ul>
+            <div className="d-flex">
+              <Link to="/login" className="btn btn-outline-primary me-2">
+                Login
+              </Link>
+              <Link to="/register" className="btn btn-primary">
+                Sign Up
+              </Link>
+            </div>
           </div>
         </div>
       </nav>
@@ -54,29 +81,6 @@ export default function Home() {
         </div>
       </header>
 
-      <section className="container my-5">
-        <h2 className="mb-4 text-center">Popular categories</h2>
-        <div className="row g-3">
-          <div className="col-6 col-md-3">
-            <div className="p-3 border rounded text-center bg-white">
-              Machine Learning
-            </div>
-          </div>
-          <div className="col-6 col-md-3">
-            <div className="p-3 border rounded text-center bg-white">
-              Data Science
-            </div>
-          </div>
-          <div className="col-6 col-md-3">
-            <div className="p-3 border rounded text-center bg-white">
-              Computer Vision
-            </div>
-          </div>
-          <div className="col-6 col-md-3">
-            <div className="p-3 border rounded text-center bg-white">Robotics</div>
-          </div>
-        </div>
-      </section>
     </>
   );
 }
