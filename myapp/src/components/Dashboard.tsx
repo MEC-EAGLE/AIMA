@@ -26,7 +26,7 @@ export default function Dashboard() {
       <div>
         <Nav />
         <header className="dashboard-hero py-5 text-center">
-          <h1 className="display-6 fw-bold">My Jobs</h1>
+          <h1 className="display-6 fw-bold text-uppercase">My Jobs</h1>
         </header>
         <div className="container my-4 text-center">
           <p>Loading...</p>
@@ -73,7 +73,7 @@ export default function Dashboard() {
     <div>
       <Nav />
       <header className="dashboard-hero py-5 text-center">
-        <h1 className="display-6 fw-bold">My Jobs</h1>
+        <h1 className="display-6 fw-bold text-uppercase">My Jobs</h1>
       </header>
       <div className="container my-4">
         <ul className="nav nav-pills mb-3">
