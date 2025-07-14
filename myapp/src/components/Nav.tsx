@@ -30,11 +30,13 @@ export default function Nav() {
                 Dashboard
               </Link>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/create">
-                Create
-              </Link>
-            </li>
+            {me && me.type === 'org' && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/create">
+                  Create
+                </Link>
+              </li>
+            )}
             <li className="nav-item">
               <Link className="nav-link" to="/community">
                 Community
