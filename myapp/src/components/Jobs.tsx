@@ -19,6 +19,7 @@ export default function Jobs() {
   const [query, setQuery] = useState('');
   const [location, setLocation] = useState('');
   const [techJobs, setTechJobs] = useState([] as any[]);
+  const [indeedLoading, setIndeedLoading] = useState(false);
   const trending = ['Remote', 'Frontend', 'Backend', 'Data Science', 'Design'];
 
   useEffect(() => {
@@ -34,10 +35,16 @@ export default function Jobs() {
   }, [navigate]);
 
   useEffect(() => {
-    fetchIndeedTechJobs()
-      .then(setTechJobs)
-      .catch(err => console.error('Indeed API', err));
+    searchIndeed('tech', '');
   }, []);
+
+  const searchIndeed = (q: string, loc: string) => {
+    setIndeedLoading(true);
+    fetchIndeedTechJobs(q, loc)
+      .then(setTechJobs)
+      .catch(err => console.error('Indeed API', err))
+      .finally(() => setIndeedLoading(false));
+  };
 
   if (!user) return null;
 
@@ -230,7 +237,12 @@ export default function Jobs() {
               />
             </div>
             <div className="col-md-2 mb-2">
-              <button className="btn btn-light btn-lg w-100">Find jobs</button>
+              <button
+                className="btn btn-light btn-lg w-100"
+                onClick={() => searchIndeed(query || 'tech', location)}
+              >
+                Find jobs
+              </button>
             </div>
           </div>
           <div className="mt-3">
@@ -238,7 +250,10 @@ export default function Jobs() {
               <button
                 key={t}
                 className="btn btn-sm btn-light text-dark me-2 mb-2"
-                onClick={() => setQuery(t)}
+                onClick={() => {
+                  setQuery(t);
+                  searchIndeed(t, location);
+                }}
               >
                 {t}
               </button>
@@ -316,9 +331,13 @@ export default function Jobs() {
             </li>
           ))}
         </ul>
-        {techJobs.length > 0 && (
-          <>
-            <h2 className="mt-4">Tech Jobs from Indeed</h2>
+        <div className="mt-4">
+          <h2>Tech Jobs from Indeed</h2>
+          {indeedLoading && <p>Loading...</p>}
+          {!indeedLoading && techJobs.length === 0 && (
+            <p>No results found.</p>
+          )}
+          {techJobs.length > 0 && (
             <ul className="list-group">
               {techJobs.map(j => (
                 <li key={j.id || j.jobkey} className="list-group-item">
@@ -332,8 +351,8 @@ export default function Jobs() {
                 </li>
               ))}
             </ul>
-          </>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
