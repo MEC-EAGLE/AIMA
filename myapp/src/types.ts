@@ -48,6 +48,7 @@ export interface Post {
   tags: string[];
   applicants: string[];
   statuses: Record<string, string>;
+  resumeScores?: Record<string, number>;
   comments: Comment[];
 }
 

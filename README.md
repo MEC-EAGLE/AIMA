@@ -13,7 +13,8 @@ Getting Started
 Install dependencies:
 npm install
 Copy `myapp/.env.example` to `myapp/.env` and add your Gmail address and app password.
-If you want to pull live listings from the Indeed API, also provide `VITE_INDEED_ENDPOINT` and `VITE_INDEED_API_KEY` in that file. The Jobs page will query Indeed whenever you click **Find jobs** or select a trending category.
+If you want resume scoring with OpenAI, also provide an `OPENAI_API_KEY`.
+The database now includes over 25 sample tech job posts so no external API keys are required.
 Start the local database API:
 npm run server
 To wipe all demo data, run:

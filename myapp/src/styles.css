@@ -202,3 +202,12 @@ body {
 .form-control::placeholder {
   color: #777;
 }
+
+/* Progress bar for Indeed-style apply flow */
+.apply-progress {
+  background-color: #fff;
+  height: 6px;
+}
+.apply-progress-bar {
+  background-color: var(--indeed-blue);
+}

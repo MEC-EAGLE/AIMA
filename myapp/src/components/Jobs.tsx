@@ -6,7 +6,6 @@ import {
   savePosts,
   getUsers,
   saveUsers,
-  fetchIndeedTechJobs,
 } from '../utils';
 
 export default function Jobs() {
@@ -18,8 +17,7 @@ export default function Jobs() {
   const [viewed, setViewed] = useState(new Set<number>());
   const [query, setQuery] = useState('');
   const [location, setLocation] = useState('');
-  const [techJobs, setTechJobs] = useState([] as any[]);
-  const [indeedLoading, setIndeedLoading] = useState(false);
+  const [minScore, setMinScore] = useState(0);
   const trending = ['Remote', 'Frontend', 'Backend', 'Data Science', 'Design'];
 
   useEffect(() => {
@@ -35,16 +33,8 @@ export default function Jobs() {
   }, [navigate]);
 
   useEffect(() => {
-    searchIndeed('tech', '');
+    // initial load already pulled posts from the database
   }, []);
-
-  const searchIndeed = (q: string, loc: string) => {
-    setIndeedLoading(true);
-    fetchIndeedTechJobs(q, loc)
-      .then(setTechJobs)
-      .catch(err => console.error('Indeed API', err))
-      .finally(() => setIndeedLoading(false));
-  };
 
   if (!user) return null;
 
@@ -134,6 +124,17 @@ export default function Jobs() {
           <a href="/create" className="btn btn-primary mb-3">
             Post a Job
           </a>
+          <div className="mb-3" style={{ maxWidth: '200px' }}>
+            <label className="form-label">Min Resume Score</label>
+            <input
+              type="number"
+              className="form-control"
+              value={minScore}
+              min={0}
+              max={100}
+              onChange={e => setMinScore(Number(e.target.value))}
+            />
+          </div>
           {mine.map(p => (
             <div key={p.id} className="card mb-3">
               <div className="card-body">
@@ -148,7 +149,9 @@ export default function Jobs() {
                 </button>
                 <h6>Applicants</h6>
                 <ul className="list-group mb-2">
-                  {p.applicants.map(a => (
+                  {p.applicants
+                    .filter(a => (p.resumeScores?.[a] ?? 0) >= minScore)
+                    .map(a => (
                     <li
                       key={a}
                       className="list-group-item"
@@ -162,6 +165,9 @@ export default function Jobs() {
                             <strong>{cand.contactName}</strong>{' '}
                             <span className="text-muted">
                               {(cand.skills || []).join(', ') || 'No skills'}
+                            </span>
+                            <span className="badge bg-primary ms-2">
+                              {(p.resumeScores?.[a] ?? 0)}/100
                             </span>
                             <Link
                               to={`/profile/${cand.email}`}
@@ -239,7 +245,7 @@ export default function Jobs() {
             <div className="col-md-2 mb-2">
               <button
                 className="btn btn-light btn-lg w-100"
-                onClick={() => searchIndeed(query || 'tech', location)}
+                onClick={() => setQuery(query)}
               >
                 Find jobs
               </button>
@@ -250,10 +256,7 @@ export default function Jobs() {
               <button
                 key={t}
                 className="btn btn-sm btn-light text-dark me-2 mb-2"
-                onClick={() => {
-                  setQuery(t);
-                  searchIndeed(t, location);
-                }}
+                onClick={() => setQuery(t)}
               >
                 {t}
               </button>
@@ -331,28 +334,6 @@ export default function Jobs() {
             </li>
           ))}
         </ul>
-        <div className="mt-4">
-          <h2>Tech Jobs from Indeed</h2>
-          {indeedLoading && <p>Loading...</p>}
-          {!indeedLoading && techJobs.length === 0 && (
-            <p>No results found.</p>
-          )}
-          {techJobs.length > 0 && (
-            <ul className="list-group">
-              {techJobs.map(j => (
-                <li key={j.id || j.jobkey} className="list-group-item">
-                  <a href={j.url || j.jobUrl} target="_blank" rel="noopener">
-                    <strong>{j.title}</strong>
-                  </a>
-                  {j.company_name && <span> - {j.company_name}</span>}
-                  {j.location && (
-                    <span className="text-muted ms-2">{j.location}</span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
       </div>
     </div>
   );

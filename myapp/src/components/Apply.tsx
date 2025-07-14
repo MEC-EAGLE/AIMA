@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Nav from './Nav';
-import { getPosts, savePosts, getUsers, saveUsers } from '../utils';
+import { getPosts, savePosts, getUsers, saveUsers, getResumeScore } from '../utils';
 import type { Post, User } from '../types';
 
 export default function Apply() {
@@ -47,8 +47,12 @@ export default function Apply() {
     if (!allPosts[idx].applicants.includes(user.email)) {
       allPosts[idx].applicants.push(user.email);
       allPosts[idx].statuses[user.email] = 'applied';
-      await savePosts(allPosts);
     }
+    const job = `${allPosts[idx].title}\n${allPosts[idx].description}`;
+    const score = await getResumeScore(resume, job);
+    if (!allPosts[idx].resumeScores) allPosts[idx].resumeScores = {};
+    allPosts[idx].resumeScores[user.email] = score;
+    await savePosts(allPosts);
     const allUsers = await getUsers();
     const uIdx = allUsers.findIndex(u => u.email === user.email);
     allUsers[uIdx].resume = resume;
@@ -61,8 +65,16 @@ export default function Apply() {
   return (
     <div>
       <Nav />
-      <div className="container my-4" style={{ maxWidth: '600px' }}>
-        <h2 className="mb-4">Apply for {post.title}</h2>
+      <div className="hero-indeed py-5">
+        <div className="container" style={{ maxWidth: '600px' }}>
+          <h2 className="mb-4">Apply for {post.title}</h2>
+        <div className="progress apply-progress mb-4">
+          <div
+            className="progress-bar apply-progress-bar"
+            role="progressbar"
+            style={{ width: `${(step / 3) * 100}%` }}
+          ></div>
+        </div>
         {step === 1 && (
           <div>
             <h5 className="mb-3">Step 1: Upload Resume</h5>
@@ -143,5 +155,6 @@ export default function Apply() {
         )}
       </div>
     </div>
-  );
+  </div>
+);
 }
