@@ -5,6 +5,7 @@ import { getUsers, hashString } from '../utils';
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPass, setShowPass] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: any) => {
@@ -49,13 +50,22 @@ export default function Login() {
             </div>
             <div className="mb-3">
               <label className="form-label">Password</label>
-              <input
-                type="password"
-                className="form-control"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-              />
+              <div className="input-group">
+                <input
+                  type={showPass ? 'text' : 'password'}
+                  className="form-control"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+                />
+                <span
+                  className="input-group-text"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setShowPass(!showPass)}
+                >
+                  <i className={`bi ${showPass ? 'bi-eye-slash' : 'bi-eye'}`}></i>
+                </span>
+              </div>
               <div className="form-text">
                 <Link to="/forgot">Forgot password?</Link>
               </div>
