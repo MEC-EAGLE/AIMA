@@ -30,11 +30,13 @@ export default function Nav() {
                 Dashboard
               </Link>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/create">
-                Create
-              </Link>
-            </li>
+            {me && me.type === 'org' && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/create">
+                  Create
+                </Link>
+              </li>
+            )}
             <li className="nav-item">
               <Link className="nav-link" to="/community">
                 Community
@@ -46,11 +48,6 @@ export default function Nav() {
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/search">
-                Search
-              </Link>
-            </li>
-            <li className="nav-item">
               <Link className="nav-link" to="/calendar">
                 Calendar
               </Link>
@@ -58,6 +55,11 @@ export default function Nav() {
             <li className="nav-item">
               <Link className="nav-link" to="/notes">
                 Notes
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link d-flex align-items-center" to="/settings">
+                <i className="bi bi-gear-fill me-1"></i> Settings
               </Link>
             </li>
             {me && me.type === 'org' && (
