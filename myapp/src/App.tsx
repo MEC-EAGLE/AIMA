@@ -20,6 +20,7 @@ import Notes from './components/Notes';
 import PeopleMap from './components/PeopleMap';
 import Interview from './components/Interview';
 import Forgot from './components/Forgot';
+import Settings from './components/Settings';
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
         <Route path="/notes" element={<Notes />} />
         <Route path="/people-map" element={<PeopleMap />} />
         <Route path="/interview" element={<Interview />} />
+        <Route path="/settings" element={<Settings />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>

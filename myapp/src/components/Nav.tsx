@@ -60,6 +60,11 @@ export default function Nav() {
                 Notes
               </Link>
             </li>
+            <li className="nav-item">
+              <Link className="nav-link d-flex align-items-center" to="/settings">
+                <i className="bi bi-gear-fill me-1"></i> Settings
+              </Link>
+            </li>
             {me && me.type === 'org' && (
               <li className="nav-item">
                 <Link className="nav-link" to="/people-map">
