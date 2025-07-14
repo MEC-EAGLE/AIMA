@@ -231,7 +231,7 @@ export default function Jobs() {
             {trending.map(t => (
               <button
                 key={t}
-                className="btn btn-sm btn-outline-light me-2 mb-2"
+                className="btn btn-sm btn-light text-dark me-2 mb-2"
                 onClick={() => setQuery(t)}
               >
                 {t}

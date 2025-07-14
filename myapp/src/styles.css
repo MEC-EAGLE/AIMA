@@ -142,8 +142,10 @@ body {
 }
 
 /* Indeed inspired jobs page */
+
+/* Black and white theme for jobs hero */
 .hero-indeed {
-  background-color: var(--indeed-blue);
+  background-color: #000;
   color: #fff;
 }
 
@@ -152,6 +154,14 @@ body {
 }
 
 .hero-indeed .btn-light {
-  color: var(--indeed-blue);
+  background-color: #fff;
+  color: #000;
   font-weight: bold;
+  border: none;
+}
+
+/* Dashboard header */
+.dashboard-hero {
+  background-color: #000;
+  color: #fff;
 }
