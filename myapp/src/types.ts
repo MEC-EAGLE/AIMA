@@ -11,7 +11,7 @@ export interface User {
   skills?: string[];
   resume?: string;
   bio?: string;
-  docs: string[];
+  docs: Attachment[];
   profileRequests: string[];
   profileShares: string[];
   recommendations?: Recommendation[];

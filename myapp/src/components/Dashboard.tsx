@@ -25,8 +25,10 @@ export default function Dashboard() {
     return (
       <div>
         <Nav />
-        <div className="container my-4">
-          <h2>My Jobs</h2>
+        <header className="dashboard-hero py-5 text-center">
+          <h1 className="display-6 fw-bold text-uppercase">My Jobs</h1>
+        </header>
+        <div className="container my-4 text-center">
           <p>Loading...</p>
         </div>
       </div>
@@ -70,8 +72,10 @@ export default function Dashboard() {
   return (
     <div>
       <Nav />
+      <header className="dashboard-hero py-5 text-center">
+        <h1 className="display-6 fw-bold text-uppercase">My Jobs</h1>
+      </header>
       <div className="container my-4">
-        <h2>My Jobs</h2>
         <ul className="nav nav-pills mb-3">
           <li className="nav-item">
             <button
@@ -96,54 +100,52 @@ export default function Dashboard() {
         {tab === 'saved' && (
           <div>
             {savedPosts.length === 0 && <p>No saved jobs.</p>}
-            <ul className="list-group">
-              {savedPosts.map(p => (
-                <li key={p.id} className="list-group-item">
-                  <div className="d-flex justify-content-between">
-                    <div>
-                      <strong>{p.title}</strong> ({p.postType})
-                      <p className="mb-1">{p.description}</p>
-                    </div>
-                    <div className="text-end">
-                      {p.applicants.includes(user.email) ? (
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-warning"
-                          onClick={() => withdraw(p.id)}
-                        >
-                          Withdraw
-                        </button>
-                      ) : (
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-primary mb-1"
-                          onClick={() => apply(p.id)}
-                        >
-                          Apply
-                        </button>
-                      )}
-                      <br />
+            {savedPosts.map(p => (
+              <div key={p.id} className="card mb-3">
+                <div className="card-body d-flex justify-content-between">
+                  <div>
+                    <strong>{p.title}</strong> ({p.postType})
+                    <p className="mb-1">{p.description}</p>
+                  </div>
+                  <div className="text-end">
+                    {p.applicants.includes(user.email) ? (
                       <button
                         type="button"
-                        className="btn btn-sm btn-outline-secondary mt-1"
-                        onClick={() => unsave(p.id)}
+                        className="btn btn-sm btn-warning"
+                        onClick={() => withdraw(p.id)}
                       >
-                        Remove
+                        Withdraw
                       </button>
-                    </div>
+                    ) : (
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-primary mb-1"
+                        onClick={() => apply(p.id)}
+                      >
+                        Apply
+                      </button>
+                    )}
+                    <br />
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline-secondary mt-1"
+                      onClick={() => unsave(p.id)}
+                    >
+                      Remove
+                    </button>
                   </div>
-                </li>
-              ))}
-            </ul>
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
         {tab === 'applied' && (
           <div>
             {appliedPosts.length === 0 && <p>You haven't applied to any jobs.</p>}
-            <ul className="list-group">
-              {appliedPosts.map(p => (
-                <li key={p.id} className="list-group-item d-flex justify-content-between">
+            {appliedPosts.map(p => (
+              <div key={p.id} className="card mb-3">
+                <div className="card-body d-flex justify-content-between">
                   <div>
                     <strong>{p.title}</strong> ({p.postType})
                     <p className="mb-1">{p.description}</p>
@@ -160,9 +162,9 @@ export default function Dashboard() {
                       Withdraw
                     </button>
                   </div>
-                </li>
-              ))}
-            </ul>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>

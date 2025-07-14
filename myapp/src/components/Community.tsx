@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import Nav from './Nav';
 import { getUsers, saveUsers, getGroups, saveGroups } from '../utils';
 
 export default function Community() {
@@ -179,8 +180,10 @@ export default function Community() {
   if (!current) return null;
 
   return (
-    <div className="container my-4" style={{ maxWidth: '600px' }}>
-      <div className="card">
+    <div>
+      <Nav />
+      <div className="container my-4" style={{ maxWidth: '600px' }}>
+        <div className="card">
         <div className="card-body">
           <h2 className="card-title mb-3">Community</h2>
           <nav className="nav nav-tabs mb-3">
