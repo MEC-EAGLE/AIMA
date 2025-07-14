@@ -59,6 +59,7 @@ export default function Register() {
       return;
     }
     const hashed = await hashString(password);
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const newUser: any = {
       email,
       password: hashed,
@@ -66,6 +67,7 @@ export default function Register() {
       contactName,
       type,
       verified: false,
+      verificationCode: otp,
       followers: [],
       groups: [],
       docs: [],
@@ -93,7 +95,25 @@ export default function Register() {
     }
     users.push(newUser);
     await saveUsers(users);
-    alert('Verification link sent. Please verify to activate your account.');
+    try {
+      const service = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+      const template = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+      await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          service_id: service,
+          template_id: template,
+          user_id: publicKey,
+          template_params: { to_email: email, otp },
+        }),
+      });
+      alert('Verification code sent to your email.');
+    } catch (err) {
+      console.error('Email sending failed', err);
+      alert('Verification code could not be emailed. Code: ' + otp);
+    }
     navigate(`/verify?email=${encodeURIComponent(email)}`);
   };
 

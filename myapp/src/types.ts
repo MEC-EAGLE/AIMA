@@ -22,6 +22,7 @@ export interface User {
   blocked?: string[];
   dmContacts?: string[];
   dmInvites?: string[];
+  verificationCode?: string;
   resetCode?: string;
 }
 
