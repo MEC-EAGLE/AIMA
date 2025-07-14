@@ -13,6 +13,7 @@ export default function Home() {
           <a className="navbar-brand fw-bold d-flex align-items-center" href="/">
             <img src={logo} alt="logo" />
           </a>
+          <span className="navbar-text mx-auto">AIMA</span>
           <button
             className="navbar-toggler"
             type="button"
@@ -22,24 +23,7 @@ export default function Home() {
             <span className="navbar-toggler-icon" />
           </button>
           <div className="collapse navbar-collapse" id="homeNavbar">
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <Link className="nav-link" to="/jobs">
-                  Jobs
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/community">
-                  Community
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/search">
-                  Search
-                </Link>
-              </li>
-            </ul>
-            <div className="d-flex">
+            <div className="ms-auto d-flex">
               <Link to="/login" className="btn btn-outline-primary me-2">
                 Login
               </Link>
@@ -53,31 +37,13 @@ export default function Home() {
 
       <header className="bg-light py-5">
         <div className="container text-center">
-          <h1 className="display-4 fw-bold">Find your next AI opportunity</h1>
-          <p className="lead mb-4">
-            Search thousands of jobs and connect with leading organisations.
-          </p>
-          <form className="row g-2 justify-content-center">
-            <div className="col-10 col-md-4">
-              <input
-                type="text"
-                className="form-control form-control-lg"
-                placeholder="Job title or keywords"
-              />
-            </div>
-            <div className="col-10 col-md-3">
-              <input
-                type="text"
-                className="form-control form-control-lg"
-                placeholder="City or remote"
-              />
-            </div>
-            <div className="col-10 col-md-auto">
-              <button type="submit" className="btn btn-primary btn-lg px-4">
-                Search
-              </button>
-            </div>
-          </form>
+          <h1 className="display-4 fw-bold">Welcome to AIMA</h1>
+          <p className="lead mb-4">AIMA connects AI enthusiasts with organisations to collaborate on projects and opportunities. Create job posts, join community groups and chat directly with other members.</p>
+          <ul className="list-unstyled">
+            <li>Post and apply for AI jobs</li>
+            <li>Join interest-based groups and chat</li>
+            <li>Manage notes, calendar and more</li>
+          </ul>
         </div>
       </header>
 
