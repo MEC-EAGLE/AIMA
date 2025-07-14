@@ -47,8 +47,16 @@ export default function Apply() {
     if (!allPosts[idx].applicants.includes(user.email)) {
       allPosts[idx].applicants.push(user.email);
       allPosts[idx].statuses[user.email] = 'applied';
-      await savePosts(allPosts);
     }
+    const tags = allPosts[idx].tags || [];
+    const skills = user.skills || [];
+    const match = tags.filter(t =>
+      skills.some(s => s.toLowerCase() === t.toLowerCase())
+    ).length;
+    const score = Math.round((match / (tags.length || 1)) * 100);
+    if (!allPosts[idx].resumeScores) allPosts[idx].resumeScores = {};
+    allPosts[idx].resumeScores[user.email] = score;
+    await savePosts(allPosts);
     const allUsers = await getUsers();
     const uIdx = allUsers.findIndex(u => u.email === user.email);
     allUsers[uIdx].resume = resume;

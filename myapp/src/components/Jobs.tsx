@@ -17,6 +17,7 @@ export default function Jobs() {
   const [viewed, setViewed] = useState(new Set<number>());
   const [query, setQuery] = useState('');
   const [location, setLocation] = useState('');
+  const [minScore, setMinScore] = useState(0);
   const trending = ['Remote', 'Frontend', 'Backend', 'Data Science', 'Design'];
 
   useEffect(() => {
@@ -123,6 +124,17 @@ export default function Jobs() {
           <a href="/create" className="btn btn-primary mb-3">
             Post a Job
           </a>
+          <div className="mb-3" style={{ maxWidth: '200px' }}>
+            <label className="form-label">Min Resume Score</label>
+            <input
+              type="number"
+              className="form-control"
+              value={minScore}
+              min={0}
+              max={100}
+              onChange={e => setMinScore(Number(e.target.value))}
+            />
+          </div>
           {mine.map(p => (
             <div key={p.id} className="card mb-3">
               <div className="card-body">
@@ -137,7 +149,9 @@ export default function Jobs() {
                 </button>
                 <h6>Applicants</h6>
                 <ul className="list-group mb-2">
-                  {p.applicants.map(a => (
+                  {p.applicants
+                    .filter(a => (p.resumeScores?.[a] ?? 0) >= minScore)
+                    .map(a => (
                     <li
                       key={a}
                       className="list-group-item"
@@ -151,6 +165,9 @@ export default function Jobs() {
                             <strong>{cand.contactName}</strong>{' '}
                             <span className="text-muted">
                               {(cand.skills || []).join(', ') || 'No skills'}
+                            </span>
+                            <span className="badge bg-primary ms-2">
+                              {(p.resumeScores?.[a] ?? 0)}/100
                             </span>
                             <Link
                               to={`/profile/${cand.email}`}
