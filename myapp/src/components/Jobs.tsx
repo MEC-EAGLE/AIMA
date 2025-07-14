@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Nav from './Nav';
-import { getPosts, savePosts, getUsers, saveUsers } from '../utils';
+import {
+  getPosts,
+  savePosts,
+  getUsers,
+  saveUsers,
+  fetchIndeedTechJobs,
+} from '../utils';
 
 export default function Jobs() {
   const navigate = useNavigate();
@@ -12,6 +18,7 @@ export default function Jobs() {
   const [viewed, setViewed] = useState(new Set<number>());
   const [query, setQuery] = useState('');
   const [location, setLocation] = useState('');
+  const [techJobs, setTechJobs] = useState([] as any[]);
   const trending = ['Remote', 'Frontend', 'Backend', 'Data Science', 'Design'];
 
   useEffect(() => {
@@ -25,6 +32,12 @@ export default function Jobs() {
     setSaved(new Set(JSON.parse(localStorage.getItem('savedJobs') || '[]')));
     setViewed(new Set(JSON.parse(localStorage.getItem('viewedJobs') || '[]')));
   }, [navigate]);
+
+  useEffect(() => {
+    fetchIndeedTechJobs()
+      .then(setTechJobs)
+      .catch(err => console.error('Indeed API', err));
+  }, []);
 
   if (!user) return null;
 
@@ -310,6 +323,24 @@ export default function Jobs() {
             </li>
           ))}
         </ul>
+        {techJobs.length > 0 && (
+          <>
+            <h2 className="mt-4">Tech Jobs from Indeed</h2>
+            <ul className="list-group">
+              {techJobs.map(j => (
+                <li key={j.id || j.jobkey} className="list-group-item">
+                  <a href={j.url || j.jobUrl} target="_blank" rel="noopener">
+                    <strong>{j.title}</strong>
+                  </a>
+                  {j.company_name && <span> - {j.company_name}</span>}
+                  {j.location && (
+                    <span className="text-muted ms-2">{j.location}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </div>
     </div>
   );
