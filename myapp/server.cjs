@@ -1,8 +1,10 @@
 const http = require('http');
 const prism = require('./prism-db.cjs');
 const nodemailer = require('nodemailer');
+const OpenAI = require('openai');
 require('dotenv').config();
 const PORT = 3001;
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 
 const server = http.createServer((req, res) => {
@@ -40,6 +42,35 @@ const server = http.createServer((req, res) => {
         console.error('OTP email failed', err);
         res.statusCode = 500;
         res.end('Send failed');
+      }
+    });
+    return;
+  }
+  if (url.pathname === '/resume-score' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', async () => {
+      try {
+        const data = JSON.parse(body || '{}');
+        const { resume, job } = data;
+        const messages = [
+          { role: 'system', content: 'Score the resume against the job description from 0 to 100 and return only the number.' },
+          { role: 'user', content: `Job Description:\n${job}\nResume:\n${resume}` },
+        ];
+        const completion = await openai.chat.completions.create({
+          model: 'gpt-3.5-turbo',
+          messages,
+          max_tokens: 5,
+        });
+        const text = completion.choices[0].message.content || '0';
+        const m = text.match(/\d+/);
+        const score = m ? parseInt(m[0], 10) : 0;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ score }));
+      } catch (err) {
+        console.error('Resume scoring failed', err);
+        res.statusCode = 500;
+        res.end('score error');
       }
     });
     return;

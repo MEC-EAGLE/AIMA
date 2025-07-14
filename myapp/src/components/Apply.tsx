@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Nav from './Nav';
-import { getPosts, savePosts, getUsers, saveUsers } from '../utils';
+import { getPosts, savePosts, getUsers, saveUsers, getResumeScore } from '../utils';
 import type { Post, User } from '../types';
 
 export default function Apply() {
@@ -48,12 +48,8 @@ export default function Apply() {
       allPosts[idx].applicants.push(user.email);
       allPosts[idx].statuses[user.email] = 'applied';
     }
-    const tags = allPosts[idx].tags || [];
-    const skills = user.skills || [];
-    const match = tags.filter(t =>
-      skills.some(s => s.toLowerCase() === t.toLowerCase())
-    ).length;
-    const score = Math.round((match / (tags.length || 1)) * 100);
+    const job = `${allPosts[idx].title}\n${allPosts[idx].description}`;
+    const score = await getResumeScore(resume, job);
     if (!allPosts[idx].resumeScores) allPosts[idx].resumeScores = {};
     allPosts[idx].resumeScores[user.email] = score;
     await savePosts(allPosts);

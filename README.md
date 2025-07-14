@@ -13,6 +13,7 @@ Getting Started
 Install dependencies:
 npm install
 Copy `myapp/.env.example` to `myapp/.env` and add your Gmail address and app password.
+If you want resume scoring with OpenAI, also provide an `OPENAI_API_KEY`.
 The database now includes over 25 sample tech job posts so no external API keys are required.
 Start the local database API:
 npm run server

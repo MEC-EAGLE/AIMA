@@ -70,3 +70,18 @@ export async function sendOtpEmail(email: string, otp: string) {
   await postJSON('send-otp', { email, otp });
 }
 
+export async function getResumeScore(resume: string, job: string): Promise<number> {
+  try {
+    const res = await fetch(`${API}/resume-score`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ resume, job }),
+    });
+    const data = await res.json();
+    return data.score ?? 0;
+  } catch (err) {
+    console.error('Score request failed', err);
+    return 0;
+  }
+}
+
