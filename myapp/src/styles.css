@@ -3,7 +3,7 @@
 }
 
 body {
-  background-color: #000;
+  background-color: #1a1a1a;
   color: #fff;
 }
 
@@ -38,23 +38,6 @@ body {
   color: #dbe4f2;
 }
 
-.btn-primary {
-  background-color: #fff;
-  border-color: #fff;
-  color: #000;
-}
-
-.btn-outline-primary {
-  background-color: #fff;
-  color: #000;
-  border-color: #fff;
-}
-
-.btn-outline-primary:hover {
-  background-color: #fff;
-  color: #000;
-  border-color: #fff;
-}
 
 /* LinkedIn-inspired styles for the landing page */
 .navbar-linkedin {
@@ -91,14 +74,14 @@ body {
   background-color: #f3f2ef;
 }
 
-/* Black and white theme for AIMA */
+/* Dark theme for AIMA */
 body {
-  background-color: #000;
+  background-color: #1a1a1a;
   color: #fff;
 }
 
 .navbar-aima {
-  background-color: #000;
+  background-color: #222;
 }
 
 .navbar-aima .navbar-brand,
@@ -112,23 +95,23 @@ body {
 }
 
 .navbar-aima .btn-primary {
-  background-color: #fff;
-  border-color: #fff;
-  color: #000;
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: #fff;
 }
 
 .navbar-aima .btn-outline-primary {
   color: #fff;
-  border-color: #fff;
+  border-color: #0d6efd;
 }
 
 .navbar-aima .btn-outline-primary:hover {
-  background-color: #fff;
-  color: #000;
-  border-color: #fff;
+  background-color: #0d6efd;
+  color: #fff;
+  border-color: #0d6efd;
 }
 
 .hero-aima {
-  background-color: #000;
+  background-color: #222;
   color: #fff;
 }

@@ -23,24 +23,7 @@ export default function Home() {
             <span className="navbar-toggler-icon" />
           </button>
           <div className="collapse navbar-collapse" id="homeNavbar">
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <Link to="/jobs" className="nav-link">
-                  Jobs
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link to="/community" className="nav-link">
-                  Community
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link to="/search" className="nav-link">
-                  Search
-                </Link>
-              </li>
-            </ul>
-            <div className="d-flex align-items-center">
+            <div className="ms-auto d-flex align-items-center">
               <Link to="/register" className="btn btn-outline-primary me-2">
                 Join now
               </Link>
