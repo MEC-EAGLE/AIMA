@@ -140,3 +140,18 @@ body {
 .info-aima p {
   font-size: 1.05rem;
 }
+
+/* Indeed inspired jobs page */
+.hero-indeed {
+  background-color: var(--indeed-blue);
+  color: #fff;
+}
+
+.hero-indeed .form-control-lg {
+  border-radius: 0;
+}
+
+.hero-indeed .btn-light {
+  color: var(--indeed-blue);
+  font-weight: bold;
+}
