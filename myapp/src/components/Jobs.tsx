@@ -66,19 +66,12 @@ export default function Jobs() {
     return matchTitle || matchDesc || matchTags;
   });
 
-  const apply = async (id: number) => {
+  const gotoApply = (id: number) => {
     if (!user.skills || user.skills.length === 0) {
       alert('Please complete your profile before applying.');
       return;
     }
-    const all = await getPosts();
-    const idx = all.findIndex(x => x.id === id);
-    if (!all[idx].applicants.includes(user.email)) {
-      all[idx].applicants.push(user.email);
-      all[idx].statuses[user.email] = 'applied';
-      await savePosts(all);
-      setPosts(all);
-    }
+    navigate(`/apply/${id}`);
   };
 
   const withdraw = async (id: number) => {
@@ -304,7 +297,7 @@ export default function Jobs() {
                         className="btn btn-sm btn-primary"
                         onClick={e => {
                           e.stopPropagation();
-                          apply(p.id);
+                          gotoApply(p.id);
                         }}
                         disabled={!user.skills || user.skills.length === 0}
                         title={

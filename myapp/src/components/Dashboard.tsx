@@ -38,19 +38,12 @@ export default function Dashboard() {
   const savedPosts = posts.filter(p => saved.has(p.id));
   const appliedPosts = posts.filter(p => p.applicants.includes(user.email));
 
-  const apply = async (id: number) => {
+  const gotoApply = (id: number) => {
     if (!user.skills || user.skills.length === 0) {
       alert('Please complete your profile before applying.');
       return;
     }
-    const all = await getPosts();
-    const idx = all.findIndex(p => p.id === id);
-    if (!all[idx].applicants.includes(user.email)) {
-      all[idx].applicants.push(user.email);
-      all[idx].statuses[user.email] = 'applied';
-      await savePosts(all);
-      setPosts(all);
-    }
+    navigate(`/apply/${id}`);
   };
 
   const withdraw = async (id: number) => {
@@ -120,7 +113,7 @@ export default function Dashboard() {
                       <button
                         type="button"
                         className="btn btn-sm btn-primary mb-1"
-                        onClick={() => apply(p.id)}
+                        onClick={() => gotoApply(p.id)}
                       >
                         Apply
                       </button>
