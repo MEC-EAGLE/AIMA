@@ -8,12 +8,8 @@ export default function Jobs() {
   const [user, setUser] = useState(null as any);
   const [posts, setPosts] = useState([] as any[]);
   const [users, setUsers] = useState([] as any[]);
-  const [filter, setFilter] = useState('all');
-  const [sort, setSort] = useState('recent');
-  const [hidden, setHidden] = useState(new Set<number>());
   const [saved, setSaved] = useState(new Set<number>());
   const [viewed, setViewed] = useState(new Set<number>());
-  const [memberQuery, setMemberQuery] = useState('');
 
   useEffect(() => {
     const u = localStorage.getItem('currentUser');
@@ -23,7 +19,6 @@ export default function Jobs() {
       setPosts(p);
       setUsers(us);
     });
-    setHidden(new Set(JSON.parse(localStorage.getItem('hiddenJobs') || '[]')));
     setSaved(new Set(JSON.parse(localStorage.getItem('savedJobs') || '[]')));
     setViewed(new Set(JSON.parse(localStorage.getItem('viewedJobs') || '[]')));
   }, [navigate]);
@@ -46,14 +41,7 @@ export default function Jobs() {
     setter(new Set(arr));
   };
 
-  const filtered = posts.filter(
-    p => !hidden.has(p.id) && (filter === 'all' || p.postType === filter)
-  );
-
-  const sorted = [...filtered].sort((a, b) => {
-    if (sort === 'title') return a.title.localeCompare(b.title);
-    return b.id - a.id;
-  });
+  const sorted = [...posts].sort((a, b) => b.id - a.id);
 
   const apply = async (id: number) => {
     if (!user.skills || user.skills.length === 0) {
@@ -115,15 +103,6 @@ export default function Jobs() {
 
   if (user.type === 'org') {
     const mine = posts.filter(p => p.authorEmail === user.email);
-    const matchedMembers = users.filter(
-      u =>
-        u.type === 'member' &&
-        memberQuery &&
-        u.skills &&
-        u.skills.some((s: string) =>
-          s.toLowerCase().includes(memberQuery.toLowerCase())
-        )
-    );
     return (
       <div>
         <Nav />
@@ -206,50 +185,6 @@ export default function Jobs() {
               </div>
             </div>
           ))}
-          <div className="mt-4">
-          <h4>Search Members</h4>
-          <input
-            className="form-control mb-2"
-            placeholder="Search by skill"
-            value={memberQuery}
-            onChange={e => setMemberQuery(e.target.value)}
-          />
-            <ul className="list-group">
-              {matchedMembers.map(c => (
-                <li key={c.email} className="list-group-item d-flex justify-content-between align-items-center">
-                  <span>
-                    {c.contactName} - {(c.skills || []).join(', ')}
-                  </span>
-                  {user.type === 'org' ? (
-                    <Link
-                      to={`/profile/${c.email}`}
-                      className="btn btn-sm btn-outline-info"
-                    >
-                      View Profile
-                    </Link>
-                  ) : c.profileShares && c.profileShares.includes(user.email) ? (
-                    <Link
-                      to={`/profile/${c.email}`}
-                      className="btn btn-sm btn-outline-info"
-                    >
-                      View Profile
-                    </Link>
-                  ) : (
-                    <button
-                      type="button"
-                      className="btn btn-sm btn-outline-info"
-                      onClick={() => requestProfile(c.email)}
-                      disabled={c.profileRequests && c.profileRequests.includes(user.email)}
-                    >
-                      {c.profileRequests && c.profileRequests.includes(user.email)
-                        ? 'Requested'
-                        : 'Request Profile'}
-                    </button>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
       </div>
     );
@@ -259,30 +194,7 @@ export default function Jobs() {
     <div>
       <Nav />
       <div className="container my-4">
-        <h2>Opportunities</h2>
-        <div className="mb-3 d-flex">
-          <select
-            className="form-select me-2"
-            style={{ maxWidth: '200px' }}
-            value={filter}
-            onChange={e => setFilter(e.target.value)}
-          >
-            <option value="all">All</option>
-            <option value="job">Jobs</option>
-            <option value="internship">Internships</option>
-            <option value="volunteering">Volunteering</option>
-            <option value="project">Projects</option>
-          </select>
-          <select
-            className="form-select"
-            style={{ maxWidth: '200px' }}
-            value={sort}
-            onChange={e => setSort(e.target.value)}
-          >
-            <option value="recent">Recent</option>
-            <option value="title">Title</option>
-          </select>
-        </div>
+        <h2>Recommended Jobs</h2>
         {sorted.length === 0 && <p>No posts.</p>}
         <ul className="list-group">
           {sorted.map(p => (
@@ -313,16 +225,6 @@ export default function Jobs() {
                     }}
                   >
                     {saved.has(p.id) ? 'Unsave' : 'Save'}
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-sm btn-outline-secondary me-2"
-                    onClick={e => {
-                      e.stopPropagation();
-                      saveState('hiddenJobs', hidden, setHidden, p.id);
-                    }}
-                  >
-                    Hide
                   </button>
                   {user.type === 'member' && (
                     p.applicants.includes(user.email) ? (
