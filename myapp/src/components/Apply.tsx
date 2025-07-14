@@ -151,5 +151,6 @@ export default function Apply() {
         )}
       </div>
     </div>
-  );
+  </div>
+);
 }
